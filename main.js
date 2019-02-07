@@ -29,6 +29,7 @@ function moveIt() {
   docStyle.setProperty('--mouse-y', ypos);
 
   // requestAnimationFrame(moveIt);
+  
 }
 
 moveIt()
