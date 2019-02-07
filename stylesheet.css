@@ -1,0 +1,20 @@
+:root {
+  --mouse-x;
+  --mouse-y;
+  --scale;
+}
+
+
+#circle {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: orange;
+/*   margin-left: cal(var(--top-pos) * 1px); */
+  transform: translate(calc(var(--mouse-x) * 1px ),calc(var(--mouse-y) * 1px));
+  position: absolute;
+
+}
+
+  
+  
