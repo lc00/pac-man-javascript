@@ -5,6 +5,15 @@
 }
 
 
+
+#container {
+    position: relative;
+    height: 300px;
+    width: 300px;
+    border: 0.1px solid;
+}
+
+
 #circle {
   height: 50px;
   width: 50px;
@@ -12,7 +21,8 @@
   background-color: orange;
 /*   margin-left: cal(var(--top-pos) * 1px); */
   transform: translate(calc(var(--mouse-x) * 1px ),calc(var(--mouse-y) * 1px));
-  position: absolute;
+  /* position: absolute; */
+  display: inline-block
 
 }
 
