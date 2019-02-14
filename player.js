@@ -60,3 +60,5 @@ class Player extends Character{
 
 
 module.exports = {Player}
+
+// export {Player}
