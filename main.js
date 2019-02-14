@@ -26,7 +26,7 @@ console.dir('parentEl', parentEl)
 // console.log('parentElOffsetWidth', parentElOffsetWidth)
 // console.log('parentElOffsetHeight', parentElOffsetHeight)
 
-function moveIt() {
+function moveIt(xpos) {
   console.log('xpos', xpos)
   console.log('ypos', ypos)
   docStyle.setProperty('--mouse-x', xpos);
@@ -36,40 +36,70 @@ function moveIt() {
 
 }
 
-function wait() {
+function moveRecursive(xpos, status) {
+  if(xpos > 500 || status != true){
+    return
+  } else {
+    xpos += 1
+    moveIt(xpos)
+
+    // add pause for 10ms
+    return moveRecursive(xpos, status)
+  }
+
 
 }
+
+let status = true
 
 document.addEventListener('keydown', function(e){ 
   console.log('e.code.....', e.code)
   
+  let moveInterval
+  let moveLeftInterval
+  clearInterval(moveInterval)
+  moveInterval = 0
+  console.log('moveInterval ---------', moveInterval)
 
-  console.log('')
+  clearInterval(moveLeftInterval)
+  moveLeftInterval = 0
+  console.log('moveLeftInterval -------------', moveLeftInterval)
+
+  if(e.code == 'ArrowLeft') {
+    status = false
+  }
+
   switch (e.code) {
     case 'ArrowRight':
-    
-      // if(parentEl)
-   
 
-      let moveInterval = setInterval(() => {
-        if(xpos < 500) {
-          
-          xpos += 3
-          // wait()
-          moveIt()
-        }
-        else {
-          clearInterval(moveInterval)
-          moveInterval = 0
-          console.log('moveInterval', moveInterval)
-        }
-      }, 10)
+      // moveInterval = setInterval(() => {
+      //   if(xpos < 500 && moveInterval != 0) { 
+      //     console.log('moveInterval setInterval', moveInterval)         
+      //     xpos += 3    
+      //     moveIt()
+      //   }
+      //   else {
+      //     clearInterval(moveInterval)
+      //     // moveInterval = 0
+      //     console.log('moveInterval', moveInterval)
+      //   }
+      // }, 10)
+
+      moveRecursive(xpos, status)
       break  
       
     case 'ArrowLeft':
-      xpos -= 100
-      if(xpos <= 0) xpos = 0
-      moveIt()
+      moveLeftInterval = setInterval(() => {
+        if(xpos < 0 && moveLeftInterval != 0) {          
+          xpos -= 3    
+          moveIt()
+        }
+        else {
+          clearInterval(moveLeftInterval)
+          moveLeftInterval = 0
+          console.log('moveLeftInterval', moveLeftInterval)
+        }
+      }, 10)
       break
     case 'ArrowUp':
       ypos -= 100
