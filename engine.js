@@ -8,7 +8,7 @@ const rootEl = document.documentElement;
 // returns the style or css of the root element
 const docStyle = rootEl.style
 
-
+const pauseTime = 20
 
 class Character {
   constructor(speed) {
@@ -61,7 +61,7 @@ function pause() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve()
-    }, 1)
+    }, pauseTime)
   })
 }
 
@@ -85,13 +85,13 @@ class Engine {
 
     // update every frame;
     // infinite loop
-    async update() {
+    update() {
       // todo set up a while loop
 
       let direction
 
 
-      document.addEventListener('keydown', function(e){ 
+      document.addEventListener('keydown', async (e) => { 
         console.log('e.code.....', e.code)
 
         switch (e.code) {
@@ -107,14 +107,14 @@ class Engine {
           case 'ArrowDown':
             direction = 'down'
             break
+          case 'Escape':
+          case 'KeyS':
+          case 'Enter':
+            direction = 'stop'
+            break
           default:
             break   
         }
-      })
-
-
-
-      // let direction = 'left'
 
         let pos 
         // update position for pac-man
@@ -122,7 +122,9 @@ class Engine {
 
           await pause()
 
-          
+          if(direction === 'stop')
+            break
+
           pos = this.player.move(direction)
           this.player.xPos = pos.xPos
           this.player.yPos = pos.yPos
@@ -133,6 +135,13 @@ class Engine {
         
      
         }
+      })
+
+
+
+      // let direction = 'left'
+
+   
         
         
       // update position for ghost
