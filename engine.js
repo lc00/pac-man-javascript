@@ -19,13 +19,19 @@ class Engine {
 
     // update every frame;
     // infinite loop
-    update() {
+    update(direction) {
       // todo set up a while loop
     
+      let pos 
       // update position for pac-man
-      let direction = 'left'
-      this.player = this.player.move(direction)
-      console.log('this.player', this.player)
+      while (true) {
+        
+          pos = this.player.move(direction)
+          this.player.xPos = pos.xPos
+          this.player.yPos = pos.yPos
+          console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
+
+      }
       
       // update position for ghost
     
@@ -41,11 +47,6 @@ class Engine {
 
 }
 
-
-
-
-
-
 let engine = new Engine() 
 engine.setUp()
-engine.update()
+engine.update('left')
