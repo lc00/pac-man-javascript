@@ -26,5 +26,14 @@
 
 }
 
-  
+canvas {
+  border: 1px solid black;
+  /* background: red */
+
+
+}  
+
+body {
+  /* margin: 0 */
+}
   

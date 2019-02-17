@@ -75,7 +75,7 @@ class Engine {
 
     // setup
     setUp() {
-      this.player = new Player(1, 500, 200)
+      this.player = new Player(1, 0, 0)
       
     
     }  
