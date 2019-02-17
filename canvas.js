@@ -30,31 +30,31 @@ let c = canvas.getContext('2d')
 // let y = 200
 
 
-let dx = 5
-let dy = 5
-let radius = 30
-
-for(let i = 0; i < 1; i++) {
-    let x = Math.random() * canvas.width
-    let y = Math.random() * canvas.height
-    let radius = Math.random() * 50
-
-    // c.beginPath()
-    // c.arc(x, y, radius, 0, Math.PI * 2, false)
-    // c.strokeStyle = 'blue'
-    // c.stroke()
-
-    animate(x,y, radius)
-    
-}
-
-// let x = 200
-// let y = 200
 // let dx = 5
 // let dy = 5
 // let radius = 30
 
-function animate(x,y, radius) {
+// for(let i = 0; i < 1; i++) {
+//     let x = Math.random() * canvas.width
+//     let y = Math.random() * canvas.height
+//     let radius = Math.random() * 50
+
+//     // c.beginPath()
+//     // c.arc(x, y, radius, 0, Math.PI * 2, false)
+//     // c.strokeStyle = 'blue'
+//     // c.stroke()
+
+//     // animate(x,y, radius)
+    
+// }
+
+let x = 200
+let y = 200
+let dx = 5
+let dy = 5
+let radius = 30
+
+function animate() {
     requestAnimationFrame(animate)
     c.clearRect(0, 0, innerWidth, innerHeight)
 
@@ -74,10 +74,6 @@ function animate(x,y, radius) {
         dy = -dy
     }
     console.log('x', x)
-
-
-    // if ( y > innerHeight || y < 0) 
-    //     y = -y
 }
 
 // animate()
