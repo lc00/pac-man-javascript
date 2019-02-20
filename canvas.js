@@ -64,36 +64,36 @@ class Circle {
         this.radius = radius
         this.dx = dx
         this.dy = dy
+    }
     
-        this.draw = function() {
-            c.beginPath()
-            c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-            c.strokeStyle = 'blue'
-            c.stroke()
-            console.log('draw...')
-        }
-        this.update = function() {
-            // c.clearRect(0, 0, innerWidth, innerHeight)
-            console.log('update...')
+    draw() {
+        c.beginPath()
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        c.strokeStyle = 'blue'
+        c.stroke()
+        console.log('draw...')
+    }
+    update() {
+        // c.clearRect(0, 0, innerWidth, innerHeight)
+        console.log('update...')
 
-            this.x = this.x + this.dx
-            this.y = this.y + this.dy
+        this.x = this.x + this.dx
+        this.y = this.y + this.dy
 
-            if (this.x + this.radius > innerWidth || this.x - this.radius < 0){
-                this.dx = - this.dx
-                console.log('hi, dx')
-            }
-            if (this.y + this.radius > innerHeight || this.y - this.radius < 0){
-                this.dy = - this.dy
-                console.log('hi, dy')
-            }
-            this.draw()
+        if (this.x + this.radius > innerWidth || this.x - this.radius < 0){
+            this.dx = - this.dx
+            console.log('hi, dx')
         }
+        if (this.y + this.radius > innerHeight || this.y - this.radius < 0){
+            this.dy = - this.dy
+            console.log('hi, dy')
+        }
+        this.draw()
     }
 }
 
 let arr = []
-for(let i = 0; i < 100; i++ ) {
+for(let i = 0; i < 120; i++ ) {
     let x = Math.random() * innerWidth
     let y = Math.random() * innerHeight
     let dx = (Math.random() -0.5) *8
