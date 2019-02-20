@@ -45,10 +45,12 @@ let c = canvas.getContext('2d')
     
 // }
 
+// function animate() {
+//     circle.update()
+//     requestAnimationFrame(animate)
+// }
+
 const pauseTime = 0
-let oldTime = new Date().getTime()
-
-
 function pause() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -110,6 +112,15 @@ animate()
     function to update an animation before the next repaint. 
     The method takes a callback as an argument to be invoked 
     before the repaint.
+    You should call this method whenever you're ready to update
+    your animation onscreen. This will request that your animation 
+    function be called before the browser performs the next repaint. 
+    The number of callbacks is usually 60 times per second, 
+    but will generally match the display refresh rate in most web 
+    browsers as per W3C recommendation. requestAnimationFrame() 
+    calls are paused in most browsers when running in background tabs 
+    or hidden <iframe>s in order to improve performance and 
+    battery life.
 */
 function animate() { 
     c.clearRect(0, 0, innerWidth, innerHeight)
@@ -120,9 +131,4 @@ function animate() {
         arr[i].update() 
     }
 }
-
-//     function animate() {
-//         circle.update()
-//         requestAnimationFrame(animate)
-//     }
 
