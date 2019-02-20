@@ -26,14 +26,6 @@ let c = canvas.getContext('2d')
 // c.strokeStyle = 'blue'
 // c.stroke()
 
-// let x = 200
-// let y = 200
-
-
-// let dx = 5
-// let dy = 5
-// let radius = 30
-
 // for(let i = 0; i < 1; i++) {
     // let x = Math.random() * canvas.width
     // let y = Math.random() * canvas.height
@@ -53,7 +45,8 @@ let c = canvas.getContext('2d')
     
 // }
 
-const pauseTime = 50
+const pauseTime = 0
+let oldTime = new Date().getTime()
 
 
 function pause() {
@@ -65,76 +58,71 @@ function pause() {
   }
 
 class Circle {
-    constructor(x,y,radius) {
+    constructor(x,y,dx,dy,radius) {
         this.x = x
         this.y = y
         this.radius = radius
-        this.dx = 5
-        this.dy = 5
+        this.dx = dx
+        this.dy = dy
     
-
-    this.draw = function() {
-        c.beginPath()
-        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        c.strokeStyle = 'blue'
-        c.stroke()
-        console.log('draw...')
-        console.log('x', this.x)
-        console.log('y', this.y)
-        console.log('dx', this.dx)
-        console.log('dy', this.dy)
-
-        // await pause()
-        // this.update()
-    
-    }
-
-    this.update = function() {
-        c.clearRect(0, 0, innerWidth, innerHeight)
-        console.log('update...')
-
-        this.x = this.x + this.dx
-        this.y = this.y + this.dy
-
-        if (this.x + this.radius > innerWidth || this.x - this.radius < 0){
-            this.dx = - this.dx
-            console.log('hi, dx')
+        this.draw = function() {
+            c.beginPath()
+            c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+            c.strokeStyle = 'blue'
+            c.stroke()
+            console.log('draw...')
         }
-        if (this.y + this.radius > innerHeight || this.y - this.radius < 0){
-            this.dy = - this.dy
-            console.log('hi, dy')
+        this.update = function() {
+            // c.clearRect(0, 0, innerWidth, innerHeight)
+            console.log('update...')
 
+            this.x = this.x + this.dx
+            this.y = this.y + this.dy
+
+            if (this.x + this.radius > innerWidth || this.x - this.radius < 0){
+                this.dx = - this.dx
+                console.log('hi, dx')
+            }
+            if (this.y + this.radius > innerHeight || this.y - this.radius < 0){
+                this.dy = - this.dy
+                console.log('hi, dy')
+            }
+            this.draw()
         }
-
-
-        this.draw()
     }
 }
 
-    
-}
-
-
-
-
-let circle = new Circle(200, 200, 30)
-circle.draw()
-// circle.update()
-
-
-let x = Math.random() * canvas.width
-let y = Math.random() * canvas.height
-let dx = 5
-let dy = 5
-let radius = 30
-// let radius = Math.random() * 50
-
-function animate() {
-    requestAnimationFrame(animate)
-
-    circle.update()
-
-
+let arr = []
+for(let i = 0; i < 100; i++ ) {
+    let x = Math.random() * innerWidth
+    let y = Math.random() * innerHeight
+    let dx = (Math.random() -0.5) *8
+    let dy = (Math.random() -0.5) *8
+    let radius = Math.random() * 50
+    arr.push(new Circle(x, y, dx, dy, radius))
 }
 
 animate()
+
+/* The window.requestAnimationFrame() method tells
+    the browser that you wish to perform an animation 
+    and requests that the browser call a specified 
+    function to update an animation before the next repaint. 
+    The method takes a callback as an argument to be invoked 
+    before the repaint.
+*/
+function animate() { 
+    c.clearRect(0, 0, innerWidth, innerHeight)
+    requestAnimationFrame(animate)
+
+    for(let i=0; i<arr.length; i++) {
+        console.log('circle', i, arr[i])
+        arr[i].update() 
+    }
+}
+
+//     function animate() {
+//         circle.update()
+//         requestAnimationFrame(animate)
+//     }
+
