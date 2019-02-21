@@ -33,7 +33,7 @@ class Character {
     }
 }
 
-class Player extends Character{
+export default class Player extends Character{
     constructor(speed, xPos, yPos) {
         super(speed)
         this.xPos = xPos
@@ -59,6 +59,6 @@ class Player extends Character{
 // console.log(`player position: ${pos.xPos}, ${pos.yPos}`)
 
 
-module.exports = {Player}
+// module.exports = {Player}
 
 // export {Player}

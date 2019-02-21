@@ -1,14 +1,11 @@
 // import {Player} from './player'
 // const {Player} = require('./player.js')
 
-
-// returns the root element of the html
-const rootEl = document.documentElement;
-
-// returns the style or css of the root element
-const docStyle = rootEl.style
-
-const pauseTime = 20
+let canvas = document.querySelector('canvas')
+canvas.width = innerWidth
+canvas.height = innerHeight
+let c = canvas.getContext('2d')
+const pauseTime = 1000
 
 class Character {
   constructor(speed) {
@@ -37,7 +34,6 @@ class Character {
               this.yPos += this.speed
               break
       }
-      
       return {
           xPos: this.xPos,
           yPos: this.yPos
@@ -65,7 +61,6 @@ function pause() {
   })
 }
 
-
 // engine
 class Engine {
     constructor() {
@@ -75,23 +70,17 @@ class Engine {
 
     // setup
     setUp() {
-      this.player = new Player(1, 0, 0)
+      this.player = new Player(10, 0, 0)
       
     
     }  
 
     // draw
-    draw() {}
-
-    // update every frame;
-    // infinite loop
-    update() {
-      // todo set up a while loop
+    draw() {
 
       let direction
 
-
-      document.addEventListener('keydown', async (e) => { 
+      document.addEventListener('keydown', e => { 
         console.log('e.code.....', e.code)
 
         switch (e.code) {
@@ -119,8 +108,7 @@ class Engine {
         let pos 
         // update position for pac-man
         while (true) {
-
-          await pause()
+        // await pause()
 
           if(direction === 'stop')
             break
@@ -130,31 +118,51 @@ class Engine {
           this.player.yPos = pos.yPos
           console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
         
-          docStyle.setProperty('--mouse-x', pos.xPos);
-          docStyle.setProperty('--mouse-y', pos.yPos);
+          
         
-     
         }
       })
 
+      c.beginPath()
+      c.arc(this.player.xPos, this.player.yPos, 30, 0, Math.PI * 2, false)
+      // c.strokeStyle = 'blue'
+      c.fillStyle = 'orange'
+      c.fill()
+      c.stroke()
+    }
 
+    // let arr = []
+    update() {
+      // udpate position for player
+      // c.clearRect(0, 0, innerWidth, innerHeight)
+      // requestAnimationFrame(update)
 
-      // let direction = 'left'
-
-   
-        
+      
+  
+      // for(let i=0; i<arr.length; i++) {
+      //     console.log('circle', i, arr[i])
+      //     arr[i].update() 
+      // }
         
       // update position for ghost
     
     
       // update position for other objects
     
-    
+      
+      this.draw()
+      
       }
+
     
 
 }
 
+
+
+
 let engine = new Engine() 
 engine.setUp()
-engine.update()
+// engine.update()
+
+engine.animate()
