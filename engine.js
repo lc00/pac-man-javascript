@@ -6,8 +6,9 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
-const pauseTime = 5000
+const pauseTime = 0
 let direction
+let speed = 5
 
 class Character {
   constructor(speed) {
@@ -22,6 +23,17 @@ class Character {
   }
 
   move(direction) {
+    if(this.xPos >= innerWidth) {
+      this.xPos -= this.speed
+    } else if (this.xPos <= 0) {
+      this.xPos += this.speed 
+    } 
+    if(this.yPos >= innerHeight) {
+      this.yPos -= this.speed
+    } else if (this.yPos <= 0) {
+      this.yPos += this.speed 
+    } 
+
       switch (direction) {
           case 'left':
               this.xPos -= this.speed
@@ -39,17 +51,7 @@ class Character {
               break
       }
 
-      if(this.xPos >= innerWidth) {
-        this.xPos -= this.speed
-      } else if (this.xPos <= 0) {
-        this.xPos += this.speed 
-      } 
-      if(this.yPos >= innerHeight) {
-        this.yPos -= this.speed
-      } else if (this.yPos <= 0) {
-        this.yPos += this.speed 
-      } 
-
+      
       return {
           xPos: this.xPos,
           yPos: this.yPos
@@ -87,7 +89,7 @@ class Engine {
 
     // setup
     setUp() {
-      this.player = new Player(10, 200, 200, 'right')
+      this.player = new Player(speed, 200, 200, 'right')
       
     
     }  
@@ -110,21 +112,51 @@ class Engine {
       // c.clearRect(0, 0, innerWidth, innerHeight)
 
       // udpate position for player
+     
+
+      let pos 
+
+      // update position for pac-man
+      pos = this.player.move(this.player.direction)
+      this.player.xPos = pos.xPos
+      this.player.yPos = pos.yPos
+      console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
+    
+      this.draw()      
+      }
+
+    listen(){
       document.addEventListener('keydown', async(e) => { 
         console.log('e.code.....', e.code)
 
         switch (e.code) {
           case 'ArrowRight':
-            this.player.direction = 'right'
+            if(this.player.direction !== 'right'){
+              this.player.direction = 'stop'
+              await pause()              
+              this.player.direction = 'right'
+            }
             break  
           case 'ArrowLeft':
-            this.player.direction = 'left'
+            if(this.player.direction !== 'left'){
+              this.player.direction = 'stop'
+              await pause()
+              this.player.direction = 'left'
+            }
             break
           case 'ArrowUp':
-            this.player.direction = 'up'
+            if(this.player.direction !== 'up'){
+              this.player.direction = 'stop'
+              await pause()
+              this.player.direction = 'up'
+            }            
             break
           case 'ArrowDown':
-            this.player.direction = 'down'
+            if(this.player.direction !== 'down'){
+              this.player.direction = 'stop'
+              await pause()
+              this.player.direction = 'down'
+            }            
             break
           case 'Escape':
           case 'KeyS':
@@ -135,45 +167,7 @@ class Engine {
             break   
         }
       })
-
-      let pos 
-      // update position for pac-man
-      pos = this.player.move(this.player.direction)
-      this.player.xPos = pos.xPos
-      this.player.yPos = pos.yPos
-      console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
-    
-      
-
-      this.draw()
-
-
-
-
-
-
-      // c.clearRect(0, 0, innerWidth, innerHeight)
-      // requestAnimationFrame(update)
-
-      
-  
-      // for(let i=0; i<arr.length; i++) {
-      //     console.log('circle', i, arr[i])
-      //     arr[i].update() 
-      // }
-        
-      // update position for ghost
-    
-    
-      // update position for other objects
-    
-      
-      // this.draw()
-      
-      }
-
-    
-
+    }
 }
 
 function animation() {
@@ -185,11 +179,9 @@ function animation() {
 
 }
 
-
-
-
 let engine = new Engine() 
 engine.setUp()
+engine.listen()
 // engine.draw()
-engine.update()
+// engine.update()
 animation()
