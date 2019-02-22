@@ -106,7 +106,7 @@ class Engine {
     // setup
     setUp() {
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)
-      this.pellet = new Pellet(50, 500, 120)
+      this.pellet = new Pellet(20, 500, 100)
     
     }  
 
@@ -121,32 +121,29 @@ class Engine {
       c.fill()
 
       c.beginPath()
-      c.arc(this.pellet.xPos, this.pellet.yPos, 10, 0, Math.PI * 2, false)
+      c.arc(this.pellet.xPos, this.pellet.yPos, this.pellet.size, 0, Math.PI * 2, false)
       c.fillStyle = 'white'
       c.fill()
       c.stroke()
     }
     
     collisionDetection() {
-      // if ( this.pellet.xPos <= this.player.xPos + this.player.radius 
-      //   || this.pellet.xPos 
-      //   && this.player.direction === 'right' && this.player) {
-      //   console.log(`player eats pellet`)
-      // }
-
       if ( this.player.xPos < this.pellet.xPos && this.player.xPos + 40 >= this.pellet.xPos 
-        || this.player.xPos <= this.pellet.xPos + 20 && this.player.xPos + 40 > this.pellet.xPos
-        
-      ) {
-        console.log(`player eats pellet`)
+        && this.player.yPos + 40 > this.pellet.yPos && this.player.yPos <= this.pellet.yPos ){
+          console.log(`player eats pellet`)
+        }
+      if ( this.player.xPos < this.pellet.xPos && this.player.xPos + 40 >= this.pellet.xPos
+        && this.player.yPos + 40 >= this.pellet.yPos && this.player.yPos < this.pellet.yPos ){
+          console.log(`player eats pellet`)
       }
-
-      //&&  this.player.yPos + 40 >= this.pellet.yPos || this.pellet.yPos + 20 <= this.player.xPos
-      // if (this.player.yPos === this.pellet.xPos) {
-      //   console.log(`player eats pellet`)
-      // }
-
-      
+       if(this.player.xPos <= this.pellet.xPos + 20 && this.player.xPos + 40 > this.pellet.xPos
+        && this.player.yPos + 40 > this.pellet.yPos && this.player.yPos <= this.pellet.yPos ){
+          console.log(`player eats pellet`)
+       }
+       if(this.player.xPos <= this.pellet.xPos + 20 && this.player.xPos + 40 > this.pellet.xPos
+        && this.player.yPos + 40 >= this.pellet.yPos && this.player.yPos < this.pellet.yPos ){
+          console.log(`player eats pellet`)
+       }
     }
 
     update() {
