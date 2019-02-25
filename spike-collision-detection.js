@@ -219,9 +219,9 @@ function animation() {
 
 }
 
-let engine = new Engine() 
-engine.setUp()
-engine.listen()
-engine.draw()
-// engine.update()
-animation()
+  let engine = new Engine() 
+  engine.setUp()
+  engine.listen()
+  engine.draw()
+  // engine.update()
+  animation()
