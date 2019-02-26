@@ -96,17 +96,95 @@ class Pellet {
   }
 }
 
+class Grid {
+  constructor(startX,startY,width,height,numXCell,numYCell, gridObj ){
+    this.x = startX
+    this.y = startY
+    this.width = width
+    this.height = height
+    this.numXCell = numXCell
+    this.numYCell = numYCell
+    this.cells = {
+      // '0,0': new Cell
+      // '0,50': new Cell
+    }
+    this.startGrid = gridObj
+  }
+
+  createCells() {
+    let str, 
+      content
+
+    let deltaX = this.width / this.numXCell - 1
+    let deltaY = this.height / this.numYCell - 1
+    console.log('deltaX', deltaX)
+    console.log('deltaY', deltaY)
+    for(let y=0; y<this.height; y++){
+      for(let x=0; x<this.width; x++) {
+        str = '' + x + ',' + y
+
+        if(this.startGrid.hasOwnProperty(str)) {
+          content = this.startGrid[str]
+        } else {
+          content = 'empty'
+        }
+        this.cells[str] = new Cell(content) 
+
+        x += deltaX
+      }
+      y += deltaY
+    }
+  }
+
+  // get cell (x,y) {
+    
+  // }
+
+
+}
+
+class Cell {
+  constructor(content){
+    this.content = content
+  }
+
+  // get content () {
+  //   return this.content
+  // }
+
+  updateContent(content) {
+    this.content = content
+    // return true
+  }
+}
+
 // engine
 class Engine {
     constructor() {
       this.player = null
+
+      /*
+      this.grid = {
+        '0,0': '',
+        '50,0': ''
+      } 
+      */
+
+
 
     }
 
     // setup
     setUp() {
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)
-      this.pellet = new Pellet(20, 500, 100)
+      // this.pellet = new Pellet(20, 500, 100)
+
+      // create grid instances
+      this.grid= new Grid(50,50,250,250,5,5, gridObj)
+      this.grid.createCells()
+      
+
+
     
     }  
 
@@ -114,17 +192,78 @@ class Engine {
     draw() { 
       // c.clearRect(0, 0, innerWidth, innerHeight)
 
-      c.beginPath()
-      c.arc(this.player.xPos, this.player.yPos, 20, 0, Math.PI * 2, false)
-      // c.strokeStyle = 'blue'
-      c.fillStyle = 'orange'
-      c.fill()
+      // c.beginPath()
+      // c.arc(this.player.xPos, this.player.yPos, 20, 0, Math.PI * 2, false)
+      // // c.strokeStyle = 'blue'
+      // c.fillStyle = 'orange'
+      // c.fill()
 
-      c.beginPath()
-      c.arc(this.pellet.xPos, this.pellet.yPos, this.pellet.size, 0, Math.PI * 2, false)
-      c.fillStyle = 'white'
-      c.fill()
-      c.stroke()
+      // c.beginPath()
+      // c.arc(this.pellet.xPos, this.pellet.yPos, this.pellet.size, 0, Math.PI * 2, false)
+      // c.fillStyle = 'white'
+      // c.fill()
+      // c.stroke()
+
+      let cells = this.grid.cells
+      for (let cell in cells) {
+        if (cells[cell].content === 'wall'){
+          let [x, y] = cell.split(',')
+
+
+
+          c.beginPath()
+          c.fillStyle = 'grey'
+          c.fillRect(x, y, 50, 50)
+          c.strokeRect(x, y, 50, 50)
+          c.stroke()
+
+        }
+        else if (cells[cell].content === 'sm-pellet'){
+          let [x, y] = cell.split(',')
+
+          c.beginPath()
+          // c.fillStyle = 'white'
+          let xTemp = Number(x) 
+          let yTemp = Number(y)
+          xTemp += 25
+          yTemp +=25
+          c.arc(xTemp,yTemp,10,0,Math.PI*2,false)
+          c.strokeRect(x, y, 50, 50)          
+          c.stroke()
+
+        }
+        else if (cells[cell].content === 'pac-man'){
+          let [x, y] = cell.split(',')
+
+          c.beginPath()
+          // c.fillStyle = 'white'
+          let xTemp = Number(x) 
+          let yTemp = Number(y)
+          xTemp += 25
+          yTemp +=25
+          c.arc(xTemp,yTemp,20,0,Math.PI*2,false)
+          c.strokeRect(x, y, 50, 50)  
+          c.fillStyle = 'orange'
+          c.fill()        
+          c.stroke()
+
+          // clear previous position in gridObj
+          let prevX = this.player.xPos
+          let prevY = this.player.yPos
+          let str = '' + prevX + prevY
+          cells[cell].content = 'empty'
+
+          // update state
+          this.player.xPos = x  
+          this.player.yPos = y
+        } 
+        else {
+          console.log(' in else...')
+        }    
+          
+      }
+
+
     }
     
     collisionDetection() {
@@ -219,9 +358,44 @@ function animation() {
 
 }
 
-  let engine = new Engine() 
-  engine.setUp()
-  engine.listen()
-  engine.draw()
-  // engine.update()
-  animation()
+
+let gridObj = {
+  '0,0': 'sm-pellet',
+  '50,0': 'sm-pellet',
+  '100,0': 'sm-pellet',
+  '150,0': 'sm-pellet',
+  '200,0': 'sm-pellet',
+
+  '0,50': 'sm-pellet',
+  '50,50': 'wall',
+  '100,50': 'wall',
+  '150,50': 'wall',
+  '200,50': 'sm-pellet',
+
+  '0,100': 'sm-pellet',
+  '50,100': 'wall',
+  '100,100': 'wall',
+  '150,100': 'wall',
+  '200,100': 'sm-pellet',
+
+  '0,150': 'sm-pellet',
+  '50,150': 'wall',
+  '100,150': 'wall',
+  '150,150': 'wall',
+  '200,150': 'sm-pellet',
+
+  '0,200': 'sm-pellet',
+  '50,200': 'sm-pellet',
+  '100,200': 'pac-man',
+  '150,200': 'sm-pellet',
+  '200,200': 'sm-pellet'
+}
+
+let engine = new Engine() 
+engine.setUp()
+// engine.listen()
+engine.draw()
+// // engine.update()
+// animation()
+
+
