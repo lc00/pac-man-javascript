@@ -7,14 +7,14 @@ canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
 const playerInfo = {
-  speed: 1,
+  speed: 10,
   xPos: 100,
-  yPos: 100,
+  yPos: 200,
   radius: 20,
-  direction: 'right'
+  direction: 'left'
 }
 
-const pauseTime = 0
+const pauseTime = 100
 let direction
 
 
@@ -30,33 +30,34 @@ class Character {
       }
   }
 
+  // pac-man can only move to a cell that
+  // has either pellet or empty cell
+  // so it checks the next cell that's in 
+  // the direction and see if it has pellet or is empty 
+  // if yes, it's move-able, 
+  // else stop in the current cell
   move(direction) {
-    if(this.xPos >= innerWidth) {
-      this.xPos -= this.speed
-    } else if (this.xPos <= 0) {
-      this.xPos += this.speed 
-    } 
-    if(this.yPos >= innerHeight) {
-      this.yPos -= this.speed
-    } else if (this.yPos <= 0) {
-      this.yPos += this.speed 
-    } 
-
+      // let str = this.xPos + ',' + this.yPos
+      
+      // temp
+      let deltaX = 50
+      let deltaY = 50
+      let cell
       switch (direction) {
           case 'left':
-              this.xPos -= this.speed
-              break
+            this.xPos -= this.speed
+            break
           case 'right':
-              this.xPos += this.speed
-              break
+            this.xPos += this.speed
+            break
           case 'up':
-              this.yPos -= this.speed
-              break
+            this.yPos -= this.speed
+            break
           case 'down':
-              this.yPos += this.speed
-              break
+            this.yPos += this.speed
+            break
           case 'stop':
-              break
+            break
       }
 
       
@@ -111,6 +112,10 @@ class Grid {
     this.startGrid = gridObj
   }
 
+  setUp () {
+    this.createCells()
+  }
+
   createCells() {
     let str, 
       content
@@ -125,6 +130,21 @@ class Grid {
 
         if(this.startGrid.hasOwnProperty(str)) {
           content = this.startGrid[str]
+
+          // if(content === 'pac-man') {
+          //   this.player = new Player(playerInfo.speed, x, y, playerInfo.direction)    
+
+
+          // // clear previous position in gridObj
+          // // let prevX = this.player.xPos
+          // // let prevY = this.player.yPos
+          // // let str = '' + prevX + prevY
+          // // cells[cell].content = 'empty'
+
+          // // update state
+          // // this.player.xPos = x  
+          // // this.player.yPos = y
+          // }
         } else {
           content = 'empty'
         }
@@ -136,9 +156,15 @@ class Grid {
     }
   }
 
-  // get cell (x,y) {
-    
-  // }
+  getCell (x,y) {
+    let str = '' + x + ',' + y
+
+    if(this.cells.hasOwnProperty(str))
+      return this.cells[str]
+    else {
+      return false
+    }
+  }
 
 
 }
@@ -176,14 +202,13 @@ class Engine {
 
     // setup
     setUp() {
-      this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)
       // this.pellet = new Pellet(20, 500, 100)
 
       // create grid instances
       this.grid= new Grid(50,50,250,250,5,5, gridObj)
-      this.grid.createCells()
-      
+      this.grid.setUp()
 
+      this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
     
     }  
@@ -209,8 +234,6 @@ class Engine {
         if (cells[cell].content === 'wall'){
           let [x, y] = cell.split(',')
 
-
-
           c.beginPath()
           c.fillStyle = 'grey'
           c.fillRect(x, y, 50, 50)
@@ -232,30 +255,21 @@ class Engine {
           c.stroke()
 
         }
-        else if (cells[cell].content === 'pac-man'){
+        else if (cells[cell].content === 'empty'){
           let [x, y] = cell.split(',')
 
           c.beginPath()
           // c.fillStyle = 'white'
-          let xTemp = Number(x) 
-          let yTemp = Number(y)
-          xTemp += 25
-          yTemp +=25
-          c.arc(xTemp,yTemp,20,0,Math.PI*2,false)
+          // let xTemp = Number(x) 
+          // let yTemp = Number(y)
+          // xTemp += 25
+          // yTemp +=25
+          // c.arc(xTemp,yTemp,20,0,Math.PI*2,false)
           c.strokeRect(x, y, 50, 50)  
-          c.fillStyle = 'orange'
-          c.fill()        
-          c.stroke()
+          // c.fillStyle = 'orange'
+          // c.fill()        
+          // c.stroke()
 
-          // clear previous position in gridObj
-          let prevX = this.player.xPos
-          let prevY = this.player.yPos
-          let str = '' + prevX + prevY
-          cells[cell].content = 'empty'
-
-          // update state
-          this.player.xPos = x  
-          this.player.yPos = y
         } 
         else {
           console.log(' in else...')
@@ -263,10 +277,30 @@ class Engine {
           
       }
 
+      // draw pac-man
+          c.beginPath()
+          let xTemp = this.player.xPos 
+          let yTemp = this.player.yPos
+          xTemp += 25
+          yTemp +=25
+          c.arc(xTemp,yTemp,20,0,Math.PI*2,false)
+          c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
+          c.fillStyle = 'orange'
+          c.fill()        
+          c.stroke()      
+
 
     }
     
+    // if player and pellet collides
+    //  pellet is eaten: 
+    //    getCell from grid
+    //    updateCellContent
+    //  
+    //  score gets updated
     collisionDetection() {
+      // this.pellet = this.grid.cells[]
+
       if ( this.player.xPos < this.pellet.xPos && this.player.xPos + 40 >= this.pellet.xPos 
         && this.player.yPos + 40 > this.pellet.yPos && this.player.yPos <= this.pellet.yPos ){
           console.log(`player eats pellet`)
@@ -285,21 +319,63 @@ class Engine {
        }
     }
 
+    decide (direction) {
+      let deltaX = 50
+      let deltaY = 50
+      let cell
+      
+      switch (direction) {
+        case 'left':
+          cell = this.grid.getCell(this.player.xPos - deltaX, this.player.yPos)
+          if(cell && cell.content !== 'wall')
+            return cell
+          break
+        case 'right':
+          cell = this.grid.getCell(this.player.xPos + deltaX, this.player.yPos)
+          if(cell && cell.content !== 'wall')
+            return cell
+          break
+        case 'up':
+          cell = this.grid.getCell(this.player.xPos, this.player.yPos - deltaY)
+          if(cell && cell.content !== 'wall')
+            return cell
+          break
+        case 'down':
+          cell = this.grid.getCell(this.player.xPos, this.player.yPos + deltaY)
+          if(cell && cell.content !== 'wall')
+            return cell
+          break
+        case 'stop':
+          return false
+    }
+    }
+
     update() {
-      // c.clearRect(0, 0, innerWidth, innerHeight)
+      c.clearRect(0, 0, innerWidth, innerHeight)
 
       // udpate position for player
      
 
       let pos 
+      // update position for pac-man     
+      let cell = this.decide(this.player.direction)
+      // cell = this.grid.getCell(this.player.xPos, this.player.yPos)
+      if(cell && cell.content !== 'wallet'){
+        // clear pac-man's previous position in cell
+        let prevX = this.player.xPos
+        let prevY = this.player.yPos
+        let str = prevX + ',' + prevY
+        this.grid.cells[str].content = 'empty'
 
-      // update position for pac-man
-      pos = this.player.move(this.player.direction)
-      this.player.xPos = pos.xPos
-      this.player.yPos = pos.yPos
+        pos = this.player.move(this.player.direction)
+        this.player.xPos = pos.xPos
+        this.player.yPos = pos.yPos
+      }
+      
+
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
 
-      this.collisionDetection()
+      // this.collisionDetection()
     
       this.draw()      
       }
@@ -352,6 +428,8 @@ class Engine {
 function animation() {
   c.clearRect(0, 0, innerWidth, innerHeight)
 
+  // await pause()
+
   requestAnimationFrame(animation)
 
   engine.update()
@@ -386,16 +464,16 @@ let gridObj = {
 
   '0,200': 'sm-pellet',
   '50,200': 'sm-pellet',
-  '100,200': 'pac-man',
+  '100,200': 'empty',
   '150,200': 'sm-pellet',
   '200,200': 'sm-pellet'
 }
 
 let engine = new Engine() 
 engine.setUp()
-// engine.listen()
+engine.listen()
 engine.draw()
-// // engine.update()
-// animation()
+// engine.update()
+animation()
 
 
