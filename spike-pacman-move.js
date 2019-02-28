@@ -7,11 +7,11 @@ canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
 const playerInfo = {
-  speed: 10,
+  speed: 1,
   xPos: 100,
   yPos: 200,
   radius: 25,
-  direction: 'left'
+  direction: 'right'
 }
 
 const pauseTime = 100
@@ -80,6 +80,9 @@ class Player extends Character{
 
   }
 
+  isAtCenter() {
+    return this.xPos % 50 === 0 ? true : false
+  }
 }
 
 function pause() {
@@ -216,20 +219,6 @@ class Engine {
 
     // draw
     draw() { 
-      // c.clearRect(0, 0, innerWidth, innerHeight)
-
-      // c.beginPath()
-      // c.arc(this.player.xPos, this.player.yPos, 20, 0, Math.PI * 2, false)
-      // // c.strokeStyle = 'blue'
-      // c.fillStyle = 'orange'
-      // c.fill()
-
-      // c.beginPath()
-      // c.arc(this.pellet.xPos, this.pellet.yPos, this.pellet.size, 0, Math.PI * 2, false)
-      // c.fillStyle = 'white'
-      // c.fill()
-      // c.stroke()
-
       let cells = this.grid.cells
       for (let cell in cells) {
         if (cells[cell].content === 'wall'){
@@ -260,16 +249,8 @@ class Engine {
           let [x, y] = cell.split(',')
 
           c.beginPath()
-          // c.fillStyle = 'white'
-          // let xTemp = Number(x) 
-          // let yTemp = Number(y)
-          // xTemp += 25
-          // yTemp +=25
-          // c.arc(xTemp,yTemp,20,0,Math.PI*2,false)
           c.strokeRect(x, y, 50, 50)  
-          // c.fillStyle = 'orange'
-          // c.fill()        
-          // c.stroke()
+         
 
         } 
         else {
@@ -359,48 +340,107 @@ class Engine {
 
       let pos 
       // update position for pac-man   
-        /*
-            if no, use tempDirection to 
-        */
+        
         /* is at the center of a cell
             if yes               
-              tempDirection === currentDirection  
-                if no
-                  is tempDirection not null
-                    if yes, use tempDirection to check the next cell content
-                    else, use currentDirection to check next cell content
-                else, use currentDirection to check next cell content
-
-            
-
+              tempDirection !== null
+                if yes, use tempDirection to check the next cell content
+                    if movable, currentDirection = tempDirection
+                else, use currentDirection to check the next cell content
+                    if movable, moveable = true
             else
-              tempDirection === currentDirection
-                if no, use tempDirection            
-              use currentDirection to check the next cell content
 
+                tempDirection !== null
+                    if yes, 
+                        check if tempDirection and currentDirection are in the 
+                        same array:[left, right], [up, down]
+                            if yes, use tempDirection to check the next cell content
+                    else, use currentDirection to check the next cell content
+
+               
+            
           if movable
-            currentDirection = tempDirection
             move
           else, stop
 
       */
-      let cell = this.decide(this.player.direction)
+
+    let isMoveAble = false
+    /* is at the center
+        yes,
+    */
+   let isAtCenter = this.player.isAtCenter()
+   let deltaX = this.grid.width / this.grid.numXCell
+   let tempX
+    let tempY
+
+   if (isAtCenter) {
+       switch (this.player.direction) {
+            case 'left':
+                tempX = this.player.xPos - deltaX  
+                tempY = this.player.yPos
+                break
+            case 'right':
+                tempX = this.player.xPos + deltaX  
+                tempY = this.player.yPos
+                break
+       }    
+   }
+   else {
+        // no user input, left and right with default direction
+        switch (this.player.direction ) {
+            // check cell at the left can be moved into
+            case 'left':
+                tempX = Math.floor(this.player.xPos / deltaX) * deltaX
+                tempY = this.player.yPos
+                break
+            case 'right':
+                tempX = (Math.floor(this.player.xPos / deltaX) + 1) * deltaX
+                tempY = this.player.yPos
+                break
+        }
+    }
+
+    let nextCell = this.grid.getCell(tempX, tempY)
+    
+
+    // no user input, up and down with default direction
+
+
+    // user input, left and right 
+    
+
+    // user input, up and down 
+
+
+    // corner
+
+
+    // t-section
+
+
+    // cross-section
+
+
+
+    //   let cell = this.decide(this.player.direction)
 
 
 
 
 
-      if(cell && cell.content !== 'wallet'){
+      if(nextCell && nextCell.content !== 'wall'){
         // clear pac-man's previous position in cell
-        let prevX = this.player.xPos
-        let prevY = this.player.yPos
-        let str = prevX + ',' + prevY
-        this.grid.cells[str].content = 'empty'
+        // let prevX = this.player.xPos
+        // let prevY = this.player.yPos
+        // let str = prevX + ',' + prevY
+        // this.grid.cells[str].content = 'empty'
 
         pos = this.player.move(this.player.direction)
         this.player.xPos = pos.xPos
         this.player.yPos = pos.yPos
       }
+      
       
 
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
@@ -503,7 +543,15 @@ let engine = new Engine()
 engine.setUp()
 engine.listen()
 engine.draw()
+engine.update()
 // engine.update()
-// animation()
+// engine.update()
+// engine.update()
+// engine.update()
+// engine.update()
+// engine.update()
+// engine.update()
+
+animation()
 
 
