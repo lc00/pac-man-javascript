@@ -492,19 +492,6 @@ console.log('userDirectionInput', userDirectionInput)
 
 
 
-    // user input(up, down), pac-man moving left and right 
-    //  has path
-
-    // user input(left, right), pac-man moving up and down
-    // no path
-    // has path
-
-    // user input, up and down 
-    // corner
-    // t-section
-    // cross-section
-
-
       if(nextCell && nextCell.content !== 'wall'){
         // clear pac-man's previous position in cell
         // let prevX = this.player.xPos
@@ -595,14 +582,14 @@ let gridObj = {
 
   '0,50': 'sm-pellet',
   '50,50': 'wall',
-  '100,50': 'wall',
+  '100,50': 'empty',
   '150,50': 'wall',
   '200,50': 'sm-pellet',
 
   '0,100': 'sm-pellet',
-  '50,100': 'wall',
-  '100,100': 'wall',
-  '150,100': 'wall',
+  '50,100': 'empty',
+  '100,100': 'empty',
+  '150,100': 'sm-pellet',
   '200,100': 'sm-pellet',
 
   '0,150': 'sm-pellet',
