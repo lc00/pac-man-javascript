@@ -396,7 +396,7 @@ console.log('userDirectionInput', userDirectionInput)
               break
           case 'down':
               tempX = this.player.xPos  
-              tempY = this.player.yPos - deltaY
+              tempY = this.player.yPos + deltaY
               break
         }    
         let nextCell = this.grid.getCell(tempX, tempY)
