@@ -228,7 +228,7 @@ class Engine {
       // this.pellet = new Pellet(20, 500, 100)
 
       // create grid instances
-      this.grid= new Grid(50,50,250,250,5,5, gridObj)
+      this.grid= new Grid(0,0,250,250,5,5, gridObj)
       this.grid.setUp()
 
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
@@ -418,7 +418,7 @@ console.log('userDirectionInput', userDirectionInput)
                 break
             case 'down':
                 tempX = this.player.xPos  
-                tempY = this.player.yPos - deltaY
+                tempY = this.player.yPos + deltaY
                 break
        }   
         }
@@ -442,7 +442,7 @@ console.log('userDirectionInput', userDirectionInput)
                 break
             case 'down':
                 tempX = this.player.xPos  
-                tempY = this.player.yPos - deltaY
+                tempY = this.player.yPos + deltaY
                 break
        }    
    }
