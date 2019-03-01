@@ -9,9 +9,9 @@ let c = canvas.getContext('2d')
 const playerInfo = {
   speed: 1,
   xPos: 0,
-  yPos: 0,
+  yPos: 200,
   radius: 25,
-  direction: 'down'
+  direction: 'right'
 }
 
 const pauseTime = 100
@@ -74,6 +74,7 @@ class Player extends Character{
       this.xPos = xPos
       this.yPos = yPos
       this.direction = direction
+      this.userDirectionInput = null
   }
 
   eat() {
@@ -81,14 +82,23 @@ class Player extends Character{
   }
 
   isAtCenter() {
-    switch (direction) {
+    let result
+
+    switch (this.direction) {
         case 'left':
         case 'right':
-            this.xPos % 50 === 0 ? true : false
+            result = this.xPos % 50 === 0 ? true : false
+            // console.log('isAtCenter, L or R', result)
+            return result
           break
         case 'up':
         case 'down':
-            this.yPos % 50 === 0 ? true : false
+            result = this.yPos % 50 === 0 ? true : false
+            // console.log('isAtCenter, U or D', result)
+            return result
+          break
+        default:
+          return null
           break
     }
   }
@@ -349,43 +359,74 @@ class Engine {
 
       let pos 
       // update position for pac-man   
-        
-        /* is at the center of a cell
-            if yes               
-              tempDirection !== null
-                if yes, use tempDirection to check the next cell content
-                    if movable, currentDirection = tempDirection
-                else, use currentDirection to check the next cell content
-                    if movable, moveable = true
-            else
+   
+    // user input(up, down), pac-man moving left and right 
+    //  no path
+    // if center, check userDirectionInput, check nextCell,
+    //      if nextCell good, update direction = userDirectionInput 
+    // if not center, check userDirectionInput, if userDirectionInput is 
+    //    in the array, then update direction = userDirectionInput
 
-                tempDirection !== null
-                    if yes, 
-                        check if tempDirection and currentDirection are in the 
-                        same array:[left, right], [up, down]
-                            if yes, use tempDirection to check the next cell content
-                    else, use currentDirection to check the next cell content
-
-               
-            
-          if movable
-            move
-          else, stop
-
-      */
-
-    let isMoveAble = false
-    /* is at the center
-        yes,
-    */
    let isAtCenter = this.player.isAtCenter()
    let deltaX = this.grid.width / this.grid.numXCell
    let deltaY = this.grid.height / this.grid.numYCell
 
    let tempX
     let tempY
+    let userDirectionInput = this.player.userDirectionInput
+    let horizontalDirArr = ['left', 'right']
+    let verticalDirArr = ['up', 'down']
+console.log('isAtCenter', isAtCenter )
+console.log('this.player.userDirectionInput', this.player.userDirectionInput)
+console.log('userDirectionInput', userDirectionInput)
+   if (isAtCenter && userDirectionInput !== null) {
+      // if(userDirectionInput !== null) {
+        switch (userDirectionInput) {
+          case 'left':
+              tempX = this.player.xPos - deltaX  
+              tempY = this.player.yPos
+              break
+          case 'right':
+              tempX = this.player.xPos + deltaX  
+              tempY = this.player.yPos
+              break
+          case 'up':
+              tempX = this.player.xPos  
+              tempY = this.player.yPos - deltaY
+              break
+          case 'down':
+              tempX = this.player.xPos  
+              tempY = this.player.yPos - deltaY
+              break
+        }    
+        let nextCell = this.grid.getCell(tempX, tempY)
+        if(nextCell && nextCell.content !== 'wall'){
+          this.player.direction = userDirectionInput
+        } else {
+          switch (this.player.direction) {
+            case 'left':
+                tempX = this.player.xPos - deltaX  
+                tempY = this.player.yPos
+                break
+            case 'right':
+                tempX = this.player.xPos + deltaX  
+                tempY = this.player.yPos
+                break
+            case 'up':
+                tempX = this.player.xPos  
+                tempY = this.player.yPos - deltaY
+                break
+            case 'down':
+                tempX = this.player.xPos  
+                tempY = this.player.yPos - deltaY
+                break
+       }   
+        }
+        // this.player.direction = userDirectionInput
 
-   if (isAtCenter) {
+      }
+
+    else if (isAtCenter && userDirectionInput === null) {
        switch (this.player.direction) {
             case 'left':
                 tempX = this.player.xPos - deltaX  
@@ -405,7 +446,18 @@ class Engine {
                 break
        }    
    }
+   // not at center
    else {
+     if(this.player.userDirectionInput !== null) {
+       if(horizontalDirArr.indexOf(this.player.direction) >= 0 
+          && horizontalDirArr.indexOf(this.player.userDirectionInput) >= 0) {
+        this.player.direction = this.player.userDirectionInput
+       } 
+       else if ( verticalDirArr.indexOf(this.player.direction) >=0
+          && verticalDirArr.indexOf(this.player.userDirectionInput) >= 0){
+        this.player.direction = this.player.userDirectionInput
+       }
+     }
         // no user input, left and right with default direction
         switch (this.player.direction ) {
             // check cell at the left can be moved into
@@ -431,29 +483,26 @@ class Engine {
     let nextCell = this.grid.getCell(tempX, tempY)
     
 
-    // no user input, up and down with default direction
+    // user input(up, down), pac-man moving left and right 
+    //  no path
+    // if center, check userDirectionInput, check nextCell,
+    //      if nextCell good, update direction = userDirectionInput 
+    // if not center, check userDirectionInput, if userDirectionInput is 
+    //    in the array, then update direction = userDirectionInput
 
 
-    // user input, left and right 
-    
+
+    // user input(up, down), pac-man moving left and right 
+    //  has path
+
+    // user input(left, right), pac-man moving up and down
+    // no path
+    // has path
 
     // user input, up and down 
-
-
     // corner
-
-
     // t-section
-
-
     // cross-section
-
-
-
-    //   let cell = this.decide(this.player.direction)
-
-
-
 
 
       if(nextCell && nextCell.content !== 'wall'){
@@ -478,37 +527,39 @@ class Engine {
       }
 
     listen(){
-      document.addEventListener('keydown', async(e) => { 
+      document.addEventListener('keydown', (e) => { 
         console.log('e.code.....', e.code)
 
         switch (e.code) {
           case 'ArrowRight':
-            if(this.player.direction !== 'right'){
-              this.player.direction = 'stop'
-              await pause()              
-              this.player.direction = 'right'
-            }
+            // if(this.player.userDirectionInput !== 'right'){
+              // this.player.direction = 'stop'
+            //   await pause()              
+              this.player.userDirectionInput = 'right'
+            // }
+    
             break  
           case 'ArrowLeft':
-            if(this.player.direction !== 'left'){
-              this.player.direction = 'stop'
-              await pause()
-              this.player.direction = 'left'
-            }
+            // if(this.player.userDirectionInput !== 'left'){
+              // this.player.direction = 'stop'
+            //   await pause()
+              this.player.userDirectionInput = 'left'
+
+            // }
             break
           case 'ArrowUp':
-            if(this.player.direction !== 'up'){
-              this.player.direction = 'stop'
-              await pause()
-              this.player.direction = 'up'
-            }            
+            // if(this.player.userDirectionInput !== 'up'){
+              // this.player.direction = 'stop'
+            //   await pause()
+              this.player.userDirectionInput = 'up'
+            // }            
             break
           case 'ArrowDown':
-            if(this.player.direction !== 'down'){
-              this.player.direction = 'stop'
-              await pause()
-              this.player.direction = 'down'
-            }            
+            // if(this.player.userDirectionInput !== 'down'){
+              // this.player.direction = 'stop'
+            //   await pause()
+              this.player.userDirectionInput = 'down'
+            // }            
             break
           case 'Escape':
           case 'KeyS':
@@ -530,6 +581,7 @@ function animation() {
   requestAnimationFrame(animation)
 
   engine.update()
+
 
 }
 
@@ -554,13 +606,13 @@ let gridObj = {
   '200,100': 'sm-pellet',
 
   '0,150': 'sm-pellet',
-  '50,150': 'pellet',
-  '100,150': 'pellet',
-  '150,150': 'pellet',
+  '50,150': 'wall',
+  '100,150': 'empty',
+  '150,150': 'wall',
   '200,150': 'sm-pellet',
 
-  '0,200': 'wall',
-  '50,200': 'wall',
+  '0,200': 'empty',
+  '50,200': 'empty',
   '100,200': 'empty',
   '150,200': 'sm-pellet',
   '200,200': 'wall'
@@ -570,7 +622,7 @@ let engine = new Engine()
 engine.setUp()
 engine.listen()
 engine.draw()
-engine.update()
+// engine.update()
 // engine.update()
 // engine.update()
 // engine.update()
