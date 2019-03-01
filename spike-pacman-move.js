@@ -8,10 +8,10 @@ let c = canvas.getContext('2d')
 
 const playerInfo = {
   speed: 1,
-  xPos: 100,
-  yPos: 200,
+  xPos: 0,
+  yPos: 0,
   radius: 25,
-  direction: 'right'
+  direction: 'down'
 }
 
 const pauseTime = 100
@@ -81,7 +81,16 @@ class Player extends Character{
   }
 
   isAtCenter() {
-    return this.xPos % 50 === 0 ? true : false
+    switch (direction) {
+        case 'left':
+        case 'right':
+            this.xPos % 50 === 0 ? true : false
+          break
+        case 'up':
+        case 'down':
+            this.yPos % 50 === 0 ? true : false
+          break
+    }
   }
 }
 
@@ -371,6 +380,8 @@ class Engine {
     */
    let isAtCenter = this.player.isAtCenter()
    let deltaX = this.grid.width / this.grid.numXCell
+   let deltaY = this.grid.height / this.grid.numYCell
+
    let tempX
     let tempY
 
@@ -383,6 +394,14 @@ class Engine {
             case 'right':
                 tempX = this.player.xPos + deltaX  
                 tempY = this.player.yPos
+                break
+            case 'up':
+                tempX = this.player.xPos  
+                tempY = this.player.yPos - deltaY
+                break
+            case 'down':
+                tempX = this.player.xPos  
+                tempY = this.player.yPos - deltaY
                 break
        }    
    }
@@ -397,6 +416,14 @@ class Engine {
             case 'right':
                 tempX = (Math.floor(this.player.xPos / deltaX) + 1) * deltaX
                 tempY = this.player.yPos
+                break
+            case 'up':
+                tempY = Math.floor(this.player.yPos / deltaY) * deltaY
+                tempX = this.player.xPos
+                break
+            case 'down':
+                tempY = (Math.floor(this.player.yPos / deltaY) + 1) * deltaY
+                tempX = this.player.xPos
                 break
         }
     }
@@ -527,13 +554,13 @@ let gridObj = {
   '200,100': 'sm-pellet',
 
   '0,150': 'sm-pellet',
-  '50,150': 'wall',
-  '100,150': 'wall',
-  '150,150': 'wall',
+  '50,150': 'pellet',
+  '100,150': 'pellet',
+  '150,150': 'pellet',
   '200,150': 'sm-pellet',
 
   '0,200': 'wall',
-  '50,200': 'sm-pellet',
+  '50,200': 'wall',
   '100,200': 'empty',
   '150,200': 'sm-pellet',
   '200,200': 'wall'
