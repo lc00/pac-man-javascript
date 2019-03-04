@@ -9,13 +9,16 @@ let c = canvas.getContext('2d')
 const playerInfo = {
   speed: 1,
   xPos: 0,
-  yPos: 200,
+  yPos: 0,
   radius: 25,
-  direction: 'right'
+  direction: 'down'
 }
 
 const pauseTime = 100
 let direction
+
+const smPelletRadius = 5
+const bigPelletRadius = 10
 
 
 class Character {
@@ -145,8 +148,8 @@ class Grid {
 
     let deltaX = this.width / this.numXCell - 1
     let deltaY = this.height / this.numYCell - 1
-    console.log('deltaX', deltaX)
-    console.log('deltaY', deltaY)
+    // console.log('deltaX', deltaX)
+    // console.log('deltaY', deltaY)
     for(let y=0; y<this.height; y++){
       for(let x=0; x<this.width; x++) {
         str = '' + x + ',' + y
@@ -259,7 +262,7 @@ class Engine {
           let yTemp = Number(y)
           xTemp += 25
           yTemp +=25
-          c.arc(xTemp,yTemp,10,0,Math.PI*2,false)
+          c.arc(xTemp,yTemp,smPelletRadius,0,Math.PI*2,false)
           c.strokeRect(x, y, 50, 50)          
           c.stroke()
 
@@ -273,22 +276,22 @@ class Engine {
 
         } 
         else {
-          console.log(' in else...')
+          // console.log(' in else...')
         }    
           
       }
 
       // draw pac-man
-          c.beginPath()
-          let xTemp = this.player.xPos 
-          let yTemp = this.player.yPos
-          xTemp += playerInfo.radius
-          yTemp += playerInfo.radius
-          c.arc(xTemp,yTemp,playerInfo.radius,0,Math.PI*2,false)
-          c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
-          c.fillStyle = 'orange'
-          c.fill()        
-          c.stroke()      
+      c.beginPath()
+      let xTemp = this.player.xPos 
+      let yTemp = this.player.yPos
+      xTemp += playerInfo.radius
+      yTemp += playerInfo.radius
+      c.arc(xTemp,yTemp,playerInfo.radius,0,Math.PI*2,false)
+      c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
+      c.fillStyle = 'orange'
+      c.fill()        
+      c.stroke()      
 
 
     }
@@ -302,54 +305,94 @@ class Engine {
     collisionDetection() {
       // this.pellet = this.grid.cells[]
 
-      if ( this.player.xPos < this.pellet.xPos && this.player.xPos + 40 >= this.pellet.xPos 
-        && this.player.yPos + 40 > this.pellet.yPos && this.player.yPos <= this.pellet.yPos ){
-          console.log(`player eats pellet`)
-        }
-      if ( this.player.xPos < this.pellet.xPos && this.player.xPos + 40 >= this.pellet.xPos
-        && this.player.yPos + 40 >= this.pellet.yPos && this.player.yPos < this.pellet.yPos ){
-          console.log(`player eats pellet`)
-      }
-       if(this.player.xPos <= this.pellet.xPos + 20 && this.player.xPos + 40 > this.pellet.xPos
-        && this.player.yPos + 40 > this.pellet.yPos && this.player.yPos <= this.pellet.yPos ){
-          console.log(`player eats pellet`)
-       }
-       if(this.player.xPos <= this.pellet.xPos + 20 && this.player.xPos + 40 > this.pellet.xPos
-        && this.player.yPos + 40 >= this.pellet.yPos && this.player.yPos < this.pellet.yPos ){
-          console.log(`player eats pellet`)
-       }
+      let tempX
+      let tempY
+      let deltaX = this.grid.width / this.grid.numXCell
+      let deltaY = this.grid.height / this.grid.numYCell
+      
+       
+      switch (this.player.direction ) {
+        case 'left':
+            tempX = Math.floor(this.player.xPos / deltaX) * deltaX
+            tempY = this.player.yPos
+            break
+        case 'right':
+            tempX = (Math.floor(this.player.xPos / deltaX) + 1) * deltaX
+            tempY = this.player.yPos
+            break
+        case 'up':
+            tempY = Math.floor(this.player.yPos / deltaY) * deltaY
+            tempX = this.player.xPos
+            break
+        case 'down':
+            tempY = (Math.floor(this.player.yPos / deltaY) + 1) * deltaY
+            tempX = this.player.xPos
+            break
     }
 
-    // decide (direction) {
-    //   let deltaX = 50
-    //   let deltaY = 50
-    //   let cell
-      
-    //   switch (direction) {
-    //     case 'left':
-    //       cell = this.grid.getCell(this.player.xPos - deltaX, this.player.yPos)
-    //       if(cell && cell.content !== 'wall')
-    //         return cell
-    //       break
-    //     case 'right':
-    //       cell = this.grid.getCell(this.player.xPos + deltaX, this.player.yPos)
-    //       if(cell && cell.content !== 'wall')
-    //         return cell
-    //       break
-    //     case 'up':
-    //       cell = this.grid.getCell(this.player.xPos, this.player.yPos - deltaY)
-    //       if(cell && cell.content !== 'wall')
-    //         return cell
-    //       break
-    //     case 'down':
-    //       cell = this.grid.getCell(this.player.xPos, this.player.yPos + deltaY)
-    //       if(cell && cell.content !== 'wall')
-    //         return cell
-    //       break
-    //     case 'stop':
-    //       return false
-    // }
-    // }
+      let playerTopLeftX = this.player.xPos
+      let playerTopLeftY = this.player.yPos
+
+      let playerTopRightX = this.player.xPos + playerInfo.radius * 2
+      let playerTopRightY = this.player.yPos
+
+      let playerBottomLeftX = this.player.xPos
+      let playerBottomLeftY = this.player.yPos + playerInfo.radius * 2
+
+      let direction = this.player.direction
+
+      let cell = this.grid.getCell(tempX, tempY)
+      if(cell.content === 'sm-pellet') {
+        let pelletRadius = smPelletRadius
+
+        let cellCoord = {x: tempX, y: tempY}
+        let pelletTopLeftX = cellCoord.x + 25 
+        let pelletTopLeftY = cellCoord.y + 25 
+   
+        let pelletTopRightX = cellCoord.x + 25 
+        let pelletTopRightY = cellCoord.y + 25 
+  
+        let pelletBottomLeftX = cellCoord.x + 25 
+        let pelletBottomLeftY = cellCoord.y + 25 
+  
+        // left to right
+        if (direction === 'right' && playerTopLeftX <= pelletTopRightX && playerTopRightX > pelletTopRightX) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+
+        }
+        // right to left
+        if (direction === 'left' && playerTopRightX >= pelletTopLeftX && playerTopLeftX < pelletTopLeftX) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+
+        }
+
+        // bottom to up
+        if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY && playerBottomLeftY > pelletBottomLeftY) {
+          console.log('************************************')
+
+          console.log('playerTopLeftY', playerTopLeftY)
+          console.log('pelletBottomLeftY', pelletBottomLeftY)
+          console.log('playerBottomLeftY', playerBottomLeftY)
+          console.log('pelletBottomLeftY', pelletBottomLeftY)
+          console.log('************************************')
+
+          console.log('collision detected...')
+          cell.updateContent('empty')
+        }
+
+        // going down
+        if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY && playerTopLeftY < pelletBottomLeftY) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+        }
+
+      }
+    }
 
     determinePos(direction, x, y, deltaX, deltaY) {
       switch (direction) {
@@ -372,9 +415,6 @@ class Engine {
     update() {
       c.clearRect(0, 0, innerWidth, innerHeight)
 
-      // udpate position for player
-     
-
       let pos 
       // update position for pac-man   
    
@@ -395,9 +435,9 @@ class Engine {
     let userDirectionInput = this.player.userDirectionInput
     let horizontalDirArr = ['left', 'right']
     let verticalDirArr = ['up', 'down']
-console.log('isAtCenter', isAtCenter )
-console.log('this.player.userDirectionInput', this.player.userDirectionInput)
-console.log('userDirectionInput', userDirectionInput)
+// console.log('isAtCenter', isAtCenter )
+// console.log('this.player.userDirectionInput', this.player.userDirectionInput)
+// console.log('userDirectionInput', userDirectionInput)
    if (isAtCenter && userDirectionInput !== null) {    
     newPos = this.determinePos(userDirectionInput, this.player.xPos, this.player.yPos, deltaX, deltaY)
     tempX = newPos.x
@@ -477,14 +517,14 @@ console.log('userDirectionInput', userDirectionInput)
 
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
 
-      // this.collisionDetection()
+      this.collisionDetection()
     
       this.draw()      
       }
 
     listen(){
       document.addEventListener('keydown', (e) => { 
-        console.log('e.code.....', e.code)
+        // console.log('e.code.....', e.code)
 
         switch (e.code) {
           case 'ArrowRight':
