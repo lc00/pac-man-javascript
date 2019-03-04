@@ -320,35 +320,57 @@ class Engine {
        }
     }
 
-    decide (direction) {
-      let deltaX = 50
-      let deltaY = 50
-      let cell
+    // decide (direction) {
+    //   let deltaX = 50
+    //   let deltaY = 50
+    //   let cell
       
+    //   switch (direction) {
+    //     case 'left':
+    //       cell = this.grid.getCell(this.player.xPos - deltaX, this.player.yPos)
+    //       if(cell && cell.content !== 'wall')
+    //         return cell
+    //       break
+    //     case 'right':
+    //       cell = this.grid.getCell(this.player.xPos + deltaX, this.player.yPos)
+    //       if(cell && cell.content !== 'wall')
+    //         return cell
+    //       break
+    //     case 'up':
+    //       cell = this.grid.getCell(this.player.xPos, this.player.yPos - deltaY)
+    //       if(cell && cell.content !== 'wall')
+    //         return cell
+    //       break
+    //     case 'down':
+    //       cell = this.grid.getCell(this.player.xPos, this.player.yPos + deltaY)
+    //       if(cell && cell.content !== 'wall')
+    //         return cell
+    //       break
+    //     case 'stop':
+    //       return false
+    // }
+    // }
+
+    determinePos(direction, x, y, deltaX, deltaY) {
       switch (direction) {
         case 'left':
-          cell = this.grid.getCell(this.player.xPos - deltaX, this.player.yPos)
-          if(cell && cell.content !== 'wall')
-            return cell
-          break
+            x = x - deltaX  
+            y = y
+            break
         case 'right':
-          cell = this.grid.getCell(this.player.xPos + deltaX, this.player.yPos)
-          if(cell && cell.content !== 'wall')
-            return cell
-          break
+            x = x + deltaX  
+            y = y
+            break
         case 'up':
-          cell = this.grid.getCell(this.player.xPos, this.player.yPos - deltaY)
-          if(cell && cell.content !== 'wall')
-            return cell
-          break
+            x = x  
+            y = y - deltaY
+            break
         case 'down':
-          cell = this.grid.getCell(this.player.xPos, this.player.yPos + deltaY)
-          if(cell && cell.content !== 'wall')
-            return cell
-          break
-        case 'stop':
-          return false
-    }
+            x = x  
+            y = y + deltaY
+            break
+      }
+      return {x, y}
     }
 
     update() {
@@ -373,79 +395,31 @@ class Engine {
 
    let tempX
     let tempY
+    let newPos
     let userDirectionInput = this.player.userDirectionInput
     let horizontalDirArr = ['left', 'right']
     let verticalDirArr = ['up', 'down']
 console.log('isAtCenter', isAtCenter )
 console.log('this.player.userDirectionInput', this.player.userDirectionInput)
 console.log('userDirectionInput', userDirectionInput)
-   if (isAtCenter && userDirectionInput !== null) {
-      // if(userDirectionInput !== null) {
-        switch (userDirectionInput) {
-          case 'left':
-              tempX = this.player.xPos - deltaX  
-              tempY = this.player.yPos
-              break
-          case 'right':
-              tempX = this.player.xPos + deltaX  
-              tempY = this.player.yPos
-              break
-          case 'up':
-              tempX = this.player.xPos  
-              tempY = this.player.yPos - deltaY
-              break
-          case 'down':
-              tempX = this.player.xPos  
-              tempY = this.player.yPos + deltaY
-              break
-        }    
-        let nextCell = this.grid.getCell(tempX, tempY)
-        if(nextCell && nextCell.content !== 'wall'){
-          this.player.direction = userDirectionInput
-        } else {
-          switch (this.player.direction) {
-            case 'left':
-                tempX = this.player.xPos - deltaX  
-                tempY = this.player.yPos
-                break
-            case 'right':
-                tempX = this.player.xPos + deltaX  
-                tempY = this.player.yPos
-                break
-            case 'up':
-                tempX = this.player.xPos  
-                tempY = this.player.yPos - deltaY
-                break
-            case 'down':
-                tempX = this.player.xPos  
-                tempY = this.player.yPos + deltaY
-                break
-       }   
-        }
-        // this.player.direction = userDirectionInput
-
-      }
-
-    else if (isAtCenter && userDirectionInput === null) {
-       switch (this.player.direction) {
-            case 'left':
-                tempX = this.player.xPos - deltaX  
-                tempY = this.player.yPos
-                break
-            case 'right':
-                tempX = this.player.xPos + deltaX  
-                tempY = this.player.yPos
-                break
-            case 'up':
-                tempX = this.player.xPos  
-                tempY = this.player.yPos - deltaY
-                break
-            case 'down':
-                tempX = this.player.xPos  
-                tempY = this.player.yPos + deltaY
-                break
-       }    
-   }
+   if (isAtCenter && userDirectionInput !== null) {    
+    newPos = this.determinePos(userDirectionInput, this.player.xPos, this.player.yPos, deltaX, deltaY)
+    tempX = newPos.x
+    tempY = newPos.y
+    let nextCell = this.grid.getCell(tempX, tempY)
+    if(nextCell && nextCell.content !== 'wall'){
+      this.player.direction = userDirectionInput
+    } else {
+      newPos = this.determinePos(this.player.direction, this.player.xPos, this.player.yPos, deltaX, deltaY)
+      tempX = newPos.x
+      tempY = newPos.y
+    }
+  }
+  else if (isAtCenter && userDirectionInput === null) { 
+    newPos = this.determinePos(this.player.direction, this.player.xPos, this.player.yPos, deltaX, deltaY)
+    tempX = newPos.x
+    tempY = newPos.y  
+  }
    // not at center
    else {
      if(this.player.userDirectionInput !== null) {
@@ -460,7 +434,6 @@ console.log('userDirectionInput', userDirectionInput)
      }
         // no user input, left and right with default direction
         switch (this.player.direction ) {
-            // check cell at the left can be moved into
             case 'left':
                 tempX = Math.floor(this.player.xPos / deltaX) * deltaX
                 tempY = this.player.yPos
