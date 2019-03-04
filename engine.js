@@ -355,18 +355,14 @@ class Engine {
       switch (direction) {
         case 'left':
             x = x - deltaX  
-            y = y
             break
         case 'right':
             x = x + deltaX  
-            y = y
             break
         case 'up':
-            x = x  
             y = y - deltaY
             break
         case 'down':
-            x = x  
             y = y + deltaY
             break
       }
