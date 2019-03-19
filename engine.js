@@ -7,11 +7,11 @@ canvas.height = window.innerHeight
 let c = canvas.getContext('2d')
 
 const playerInfo = {
-  speed: 1,
+  speed: 2,
   xPos: 0,
-  yPos: 0,
+  yPos: 200,
   radius: 25,
-  direction: 'down'
+  direction: 'right'
 }
 
 const pauseTime = 100
@@ -231,7 +231,7 @@ class Engine {
       // this.pellet = new Pellet(20, 500, 100)
 
       // create grid instances
-      this.grid= new Grid(0,0,250,250,5,5, gridObj)
+      this.grid= new Grid(0,0,200,250,5,5, gridObj)
       this.grid.setUp()
 
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
@@ -258,6 +258,20 @@ class Engine {
 
           c.beginPath()
           // c.fillStyle = 'white'
+          let xTemp = Number(x) 
+          let yTemp = Number(y)
+          xTemp += 25
+          yTemp +=25
+          c.arc(xTemp,yTemp,smPelletRadius,0,Math.PI*2,false)
+          c.strokeRect(x, y, 50, 50)          
+          c.stroke()
+
+        }
+        else if (cells[cell].content === 'big-pellet'){
+          let [x, y] = cell.split(',')
+
+          c.beginPath()
+          c.fillStyle = 'red'
           let xTemp = Number(x) 
           let yTemp = Number(y)
           xTemp += 25
@@ -588,30 +602,46 @@ let gridObj = {
   '100,0': 'sm-pellet',
   '150,0': 'sm-pellet',
   '200,0': 'sm-pellet',
+  '250,0': 'sm-pellet',
 
   '0,50': 'sm-pellet',
   '50,50': 'wall',
   '100,50': 'empty',
   '150,50': 'wall',
   '200,50': 'sm-pellet',
+  '250,50': 'sm-pellet',
+
 
   '0,100': 'sm-pellet',
   '50,100': 'empty',
   '100,100': 'empty',
   '150,100': 'sm-pellet',
   '200,100': 'sm-pellet',
+  '250,100': 'sm-pellet',
+
 
   '0,150': 'sm-pellet',
   '50,150': 'wall',
   '100,150': 'empty',
   '150,150': 'wall',
   '200,150': 'sm-pellet',
+  '250,150': 'sm-pellet',
+
 
   '0,200': 'empty',
   '50,200': 'empty',
   '100,200': 'empty',
   '150,200': 'sm-pellet',
-  '200,200': 'wall'
+  '200,200': 'wall',
+  '250,200': 'sm-pellet',
+
+  '0,250': 'empty',
+  '50,250': 'empty',
+  '100,250': 'empty',
+  '150,250': 'sm-pellet',
+  '200,250': 'wall',
+  '250,250': 'sm-pellet'
+
 }
 
 let engine = new Engine() 
