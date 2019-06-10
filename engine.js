@@ -271,12 +271,14 @@ class Engine {
           let [x, y] = cell.split(',')
 
           c.beginPath()
-          c.fillStyle = 'red'
           let xTemp = Number(x) 
           let yTemp = Number(y)
           xTemp += 25
           yTemp +=25
-          c.arc(xTemp,yTemp,smPelletRadius,0,Math.PI*2,false)
+          c.arc(xTemp,yTemp,bigPelletRadius,0,Math.PI*2,false)
+          c.fillStyle = 'white'
+          c.fill()
+
           c.strokeRect(x, y, 50, 50)          
           c.stroke()
 
@@ -303,7 +305,7 @@ class Engine {
       yTemp += playerInfo.radius
       c.arc(xTemp,yTemp,playerInfo.radius,0,Math.PI*2,false)
       c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
-      c.fillStyle = 'orange'
+      c.fillStyle = 'yellow'
       c.fill()        
       c.stroke()      
 
@@ -356,7 +358,7 @@ class Engine {
       let direction = this.player.direction
 
       let cell = this.grid.getCell(tempX, tempY)
-      if(cell.content === 'sm-pellet') {
+      if(cell.content === 'sm-pellet' || cell.content === 'big-pellet') {
         let pelletRadius = smPelletRadius
 
         let cellCoord = {x: tempX, y: tempY}
@@ -598,7 +600,7 @@ function animation() {
 
 let gridObj = {
   '0,0': 'sm-pellet',
-  '50,0': 'sm-pellet',
+  '50,0': 'big-pellet',
   '100,0': 'sm-pellet',
   '150,0': 'sm-pellet',
   '200,0': 'sm-pellet',
