@@ -9,7 +9,7 @@ let c = canvas.getContext('2d')
 const playerInfo = {
   speed: 2,
   xPos: 0,
-  yPos: 0,
+  yPos: 250,
   radius: 25,
   direction: 'right'
 }
@@ -293,7 +293,9 @@ class Engine {
         } 
         else {
           // console.log(' in else...')
-        }    
+        } 
+        
+      
           
       }
 
@@ -310,6 +312,9 @@ class Engine {
       c.stroke()      
 
 
+      // c.beginPath()
+      // c.fillStyle='black'
+      // c.fill()
     }
     
     // if player and pellet collides
