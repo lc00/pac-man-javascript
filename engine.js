@@ -9,7 +9,7 @@ let c = canvas.getContext('2d')
 const playerInfo = {
   speed: 2,
   xPos: 0,
-  yPos: 200,
+  yPos: 0,
   radius: 25,
   direction: 'right'
 }
@@ -231,7 +231,7 @@ class Engine {
       // this.pellet = new Pellet(20, 500, 100)
 
       // create grid instances
-      this.grid= new Grid(0,0,200,250,5,5, gridObj)
+      this.grid= new Grid(0,0,500,500,10,10, gridObj)
       this.grid.setUp()
 
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
