@@ -78,6 +78,7 @@ class Engine {
 
     // draw
     draw() { 
+      // draw the cells and their content
       let cells = this.grid.cells
       for (let cell in cells) {
         if (cells[cell].content === 'wall'){
@@ -326,26 +327,27 @@ class Engine {
         this.player.direction = this.player.userDirectionInput
        }
      }
-        // no user input, left and right with default direction
-        switch (this.player.direction ) {
-            case 'left':
-                tempX = Math.floor(this.player.xPos / deltaX) * deltaX
-                tempY = this.player.yPos
-                break
-            case 'right':
-                tempX = (Math.floor(this.player.xPos / deltaX) + 1) * deltaX
-                tempY = this.player.yPos
-                break
-            case 'up':
-                tempY = Math.floor(this.player.yPos / deltaY) * deltaY
-                tempX = this.player.xPos
-                break
-            case 'down':
-                tempY = (Math.floor(this.player.yPos / deltaY) + 1) * deltaY
-                tempX = this.player.xPos
-                break
-        }
+
+    // no user input, left and right with default direction
+    switch (this.player.direction ) {
+        case 'left':
+            tempX = Math.floor(this.player.xPos / deltaX) * deltaX
+            tempY = this.player.yPos
+            break
+        case 'right':
+            tempX = (Math.floor(this.player.xPos / deltaX) + 1) * deltaX
+            tempY = this.player.yPos
+            break
+        case 'up':
+            tempY = Math.floor(this.player.yPos / deltaY) * deltaY
+            tempX = this.player.xPos
+            break
+        case 'down':
+            tempY = (Math.floor(this.player.yPos / deltaY) + 1) * deltaY
+            tempX = this.player.xPos
+            break
     }
+  }
 
     let nextCell = this.grid.getCell(tempX, tempY)
     
