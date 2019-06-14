@@ -51,6 +51,8 @@ class Ghost extends Character {
       }
     }
 
+
+
     maybeMove(grid) {
       let isAtCenter = this.isAtCenter()
       let deltaX = grid.width / grid.numXCell
@@ -67,15 +69,41 @@ class Ghost extends Character {
     // console.log('this.player.userDirectionInput', this.player.userDirectionInput)
     // console.log('userDirectionInput', userDirectionInput)
 
-      // if at center, direction can be any of the four direction
-      if (isAtCenter) {    
-         let randNum = Math.floor(Math.random() * 4)
-         this.direction = dirArr[randNum]
-        //  this.direction = 'left'
+      // if at center, determine if current direction is viable
+      // if yes, continue 
+      // else do a random direction
+      if (isAtCenter) {   
+        
+        
+        let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
+        tempX = newPos.x
+        tempY = newPos.y
 
-         let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
-          tempX = newPos.x
-          tempY = newPos.y
+        let nextCell = grid.getCell(tempX, tempY)
+        let pos
+
+       
+
+  
+        if(nextCell && nextCell.content === 'wall' || nextCell === false){
+          //   // clear pac-man's previous position in cell
+          //   // let prevX = this.player.xPos
+          //   // let prevY = this.player.yPos
+          //   // let str = prevX + ',' + prevY
+          //   // grid.cells[str].content = 'empty'
+    
+          //   pos = this.move(this.direction)
+          //   this.xPos = pos.xPos
+          //   this.yPos = pos.yPos
+          
+          let randNum = Math.floor(Math.random() * 4)
+          this.direction = dirArr[randNum]
+          //  this.direction = 'left'
+
+          let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
+            tempX = newPos.x
+            tempY = newPos.y
+        }
          
       }
       // not at center, continue at the current direction
@@ -92,7 +120,7 @@ class Ghost extends Character {
       //   }
 
       
-      // no user input, left and right with default direction
+      // not center
       else {
         switch (this.direction ) {
             case 'left':
