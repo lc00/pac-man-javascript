@@ -1,6 +1,6 @@
 class Player extends Character{
-    constructor(speed, xPos, yPos, direction) {
-        super(speed)
+    constructor(speed, color, xPos, yPos, direction) {
+        super(speed, color)
         this.xPos = xPos
         this.yPos = yPos
         this.direction = direction

@@ -11,6 +11,7 @@ let c = canvas.getContext('2d')
 
 const playerInfo = {
   speed: 2,
+  color: 'yellow',
   xPos: 0,
   yPos: 250,
   radius: 25,
@@ -20,6 +21,7 @@ const playerInfo = {
 const ghostsInfo = {
   redGhost: {
     speed: 2,
+    color: 'red',
     xPos: 0,
     yPos: 0,
     radius: 25,
@@ -27,6 +29,7 @@ const ghostsInfo = {
   },
   pinkGhost: {
     speed: 2,
+    color: 'pink',
     xPos: 0,
     yPos: 50,
     radius: 25,
@@ -34,6 +37,7 @@ const ghostsInfo = {
   },
   aquaGhost: {
     speed: 2,
+    color: 'aqua',
     xPos: 0,
     yPos: 100,
     radius: 25,
@@ -41,6 +45,7 @@ const ghostsInfo = {
   },
   orangeGhost: {
     speed: 2,
+    color: 'orange',
     xPos: 0,
     yPos: 150,
     radius: 25,
@@ -103,9 +108,9 @@ class Engine {
       this.grid= new Grid(0,0,500,500,10,10, gridObj)
       this.grid.setUp()
 
-      this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
+      this.player = new Player(playerInfo.speed, playerInfo.color, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
-      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
+      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.color, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
     
     }  
 
@@ -178,7 +183,7 @@ class Engine {
       yTemp += playerInfo.radius
       c.arc(xTemp,yTemp,playerInfo.radius,0,Math.PI*2,false)
       // c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
-      c.fillStyle = 'yellow'
+      c.fillStyle = this.player.color
       c.fill()        
       c.stroke()      
 
@@ -192,11 +197,37 @@ class Engine {
       let ghostYTemp = this.redGhost.yPos + ghostsInfo.redGhost.radius
 
       c.arc(ghostXTemp, ghostYTemp, ghostsInfo.redGhost.radius, 0, Math.PI*2, false)
-      c.fillStyle = 'red'
+      c.fillStyle = this.redGhost.color
       c.fill()
       c.stroke()
       
 
+    }
+
+    bigPelletEaten() {
+
+        // ghosts turn green for now
+          this.redGhost.color = 'green'
+          console.log('big-pellet eaten -----------')
+          
+          switch (this.redGhost.direction) {
+            case 'left':
+              this.redGhost.direction = 'right'
+              break
+            case 'right':
+              this.redGhost.direction = 'left'
+              break
+            case 'up':
+                this.redGhost.direction = 'down'
+                break 
+            case 'down':
+                this.redGhost.direction = 'up'
+                break 
+
+          }
+          console.log('change direction -----------')
+
+        
     }
     
     // if player and pellet collides
@@ -245,7 +276,10 @@ class Engine {
       let direction = this.player.direction
 
       let cell = this.grid.getCell(tempX, tempY)
-      if(cell.content === 'sm-pellet' || cell.content === 'big-pellet') {
+
+      //|| cell.content === 'big-pellet'
+
+      if(cell.content === 'sm-pellet' ) {
         let pelletRadius = smPelletRadius
 
         let cellCoord = {x: tempX, y: tempY}
@@ -264,6 +298,10 @@ class Engine {
           console.log('************************************')
           cell.updateContent('empty')
 
+          // if(cell.content === 'big-pellet') {
+          //   this.bigPelletEaten()
+          // }
+
         }
         // right to left
         if (direction === 'left' && playerTopRightX >= pelletTopLeftX && playerTopLeftX < pelletTopLeftX) {
@@ -271,6 +309,9 @@ class Engine {
           console.log('************************************')
           cell.updateContent('empty')
 
+          // if(cell.content === 'big-pellet') {
+          //   this.bigPelletEaten()
+          // }
         }
 
         // bottom to up
@@ -285,6 +326,7 @@ class Engine {
 
           console.log('collision detected...')
           cell.updateContent('empty')
+
         }
 
         // going down
@@ -292,9 +334,87 @@ class Engine {
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
+
+          // if(cell.content === 'big-pellet') {
+          //   this.bigPelletEaten()
+          // }
         }
 
+        
+
+
       }
+
+      
+      else if(cell.content === 'big-pellet' ) {
+        let pelletRadius = smPelletRadius
+
+        let cellCoord = {x: tempX, y: tempY}
+        let pelletTopLeftX = cellCoord.x + bigPelletRadius 
+        let pelletTopLeftY = cellCoord.y + bigPelletRadius
+   
+        let pelletTopRightX = cellCoord.x + bigPelletRadius 
+        let pelletTopRightY = cellCoord.y +  bigPelletRadius
+  
+        let pelletBottomLeftX = cellCoord.x + bigPelletRadius 
+        let pelletBottomLeftY = cellCoord.y + bigPelletRadius 
+  
+        // left to right
+        if (direction === 'right' && playerTopLeftX <= pelletTopRightX && playerTopRightX > pelletTopRightX) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+
+          // if(cell.content === 'big-pellet') {
+            this.bigPelletEaten()
+          // }
+
+        }
+        // right to left
+        if (direction === 'left' && playerTopRightX >= pelletTopLeftX && playerTopLeftX < pelletTopLeftX) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+
+          // if(cell.content === 'big-pellet') {
+            this.bigPelletEaten()
+          // }
+        }
+
+        // bottom to up
+        if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY && playerBottomLeftY > pelletBottomLeftY) {
+          console.log('************************************')
+
+          console.log('playerTopLeftY', playerTopLeftY)
+          console.log('pelletBottomLeftY', pelletBottomLeftY)
+          console.log('playerBottomLeftY', playerBottomLeftY)
+          console.log('pelletBottomLeftY', pelletBottomLeftY)
+          console.log('************************************')
+
+          console.log('collision detected...')
+          cell.updateContent('empty')
+
+          this.bigPelletEaten()
+
+
+        }
+
+        // going down
+        if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY && playerTopLeftY < pelletBottomLeftY) {
+          console.log('collision detected...')
+          console.log('************************************')
+          cell.updateContent('empty')
+
+          // if(cell.content === 'big-pellet') {
+            this.bigPelletEaten()
+          // }
+        }
+
+        
+
+
+      }
+      
     }
 
     determinePos(direction, x, y, deltaX, deltaY) {

@@ -1,6 +1,7 @@
 class Character {
-  constructor(speed) {
+  constructor(speed, color) {
       this.speed = speed
+      this.color = color
   }
 
   get position () {
