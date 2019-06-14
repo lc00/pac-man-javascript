@@ -17,6 +17,37 @@ const playerInfo = {
   direction: 'right'
 }
 
+const ghostsInfo = {
+  redGhost: {
+    speed: 2,
+    xPos: 0,
+    yPos: 0,
+    radius: 25,
+    direction: 'right'
+  },
+  pinkGhost: {
+    speed: 2,
+    xPos: 0,
+    yPos: 50,
+    radius: 25,
+    direction: 'right'
+  },
+  aquaGhost: {
+    speed: 2,
+    xPos: 0,
+    yPos: 100,
+    radius: 25,
+    direction: 'right'
+  },
+  orangeGhost: {
+    speed: 2,
+    xPos: 0,
+    yPos: 150,
+    radius: 25,
+    direction: 'right'
+  }
+}
+
 const pauseTime = 100
 let direction
 
@@ -51,6 +82,7 @@ const bigPelletRadius = 10
 class Engine {
     constructor() {
       this.player = null
+      this.redGhost = null
 
       /*
       this.grid = {
@@ -73,6 +105,7 @@ class Engine {
 
       this.player = new Player(playerInfo.speed, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
+      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
     
     }  
 
@@ -144,15 +177,26 @@ class Engine {
       xTemp += playerInfo.radius
       yTemp += playerInfo.radius
       c.arc(xTemp,yTemp,playerInfo.radius,0,Math.PI*2,false)
-      c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
+      // c.strokeRect(this.player.xPos, this.player.yPos, 50, 50)  
       c.fillStyle = 'yellow'
       c.fill()        
       c.stroke()      
 
 
-      // c.beginPath()
-      // c.fillStyle='black'
-      // c.fill()
+      // draw ghost
+      c.beginPath()
+      // let ghostXTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
+      // let ghostYTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
+
+      let ghostXTemp = this.redGhost.xPos + ghostsInfo.redGhost.radius
+      let ghostYTemp = this.redGhost.yPos + ghostsInfo.redGhost.radius
+
+      c.arc(ghostXTemp, ghostYTemp, ghostsInfo.redGhost.radius, 0, Math.PI*2, false)
+      c.fillStyle = 'red'
+      c.fill()
+      c.stroke()
+      
+
     }
     
     // if player and pellet collides
@@ -376,6 +420,14 @@ class Engine {
       
 
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
+
+
+      // update ghost position
+      let ghostPos = this.redGhost.maybeMove(this.grid)
+
+      this.redGhost.xPos = ghostPos.xPos
+      this.redGhost.yPos = ghostPos.yPos
+
 
       this.collisionDetection()
     
