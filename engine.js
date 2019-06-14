@@ -59,7 +59,7 @@ let direction
 const smPelletRadius = 5
 const bigPelletRadius = 10
 
-
+const edibleModeTime = 3000
 
 
 
@@ -204,29 +204,41 @@ class Engine {
 
     }
 
+    ghostInEdibleMode() {
+       // ghosts turn green for now
+       this.redGhost.color = 'green'
+       console.log('big-pellet eaten -----------')
+       
+       switch (this.redGhost.direction) {
+         case 'left':
+           this.redGhost.direction = 'right'
+           break
+         case 'right':
+           this.redGhost.direction = 'left'
+           break
+         case 'up':
+             this.redGhost.direction = 'down'
+             break 
+         case 'down':
+             this.redGhost.direction = 'up'
+             break 
+
+       }
+       console.log('change direction -----------')
+
+    }
+
+    ghostInNormalMode() {
+      this.redGhost.color = 'red'
+    }
+
     bigPelletEaten() {
 
-        // ghosts turn green for now
-          this.redGhost.color = 'green'
-          console.log('big-pellet eaten -----------')
-          
-          switch (this.redGhost.direction) {
-            case 'left':
-              this.redGhost.direction = 'right'
-              break
-            case 'right':
-              this.redGhost.direction = 'left'
-              break
-            case 'up':
-                this.redGhost.direction = 'down'
-                break 
-            case 'down':
-                this.redGhost.direction = 'up'
-                break 
+      this.ghostInEdibleMode()
 
-          }
-          console.log('change direction -----------')
-
+      
+      setTimeout(this.ghostInNormalMode.bind(this), edibleModeTime)
+       
         
     }
     
