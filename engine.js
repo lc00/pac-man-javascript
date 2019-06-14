@@ -283,14 +283,14 @@ class Engine {
         let pelletRadius = smPelletRadius
 
         let cellCoord = {x: tempX, y: tempY}
-        let pelletTopLeftX = cellCoord.x + 25 
-        let pelletTopLeftY = cellCoord.y + 25 
+        let pelletTopLeftX = cellCoord.x + smPelletRadius 
+        let pelletTopLeftY = cellCoord.y + smPelletRadius 
    
-        let pelletTopRightX = cellCoord.x + 25 
-        let pelletTopRightY = cellCoord.y + 25 
+        let pelletTopRightX = cellCoord.x + smPelletRadius 
+        let pelletTopRightY = cellCoord.y + smPelletRadius 
   
-        let pelletBottomLeftX = cellCoord.x + 25 
-        let pelletBottomLeftY = cellCoord.y + 25 
+        let pelletBottomLeftX = cellCoord.x + smPelletRadius 
+        let pelletBottomLeftY = cellCoord.y + smPelletRadius 
   
         // left to right
         if (direction === 'right' && playerTopLeftX <= pelletTopRightX && playerTopRightX > pelletTopRightX) {
