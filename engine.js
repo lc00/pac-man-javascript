@@ -61,7 +61,7 @@ const bigPelletRadius = 10
 
 const edibleModeTime = 3000
 
-
+let requestId = null
 
 
 // function pause() {
@@ -89,6 +89,7 @@ class Engine {
       this.player = null
       this.redGhost = null
       this.mode = 'normal'
+      this.isGameOn = true
       /*
       this.grid = {
         '0,0': '',
@@ -108,9 +109,9 @@ class Engine {
       this.grid= new Grid(0,0,500,500,10,10, gridObj)
       this.grid.setUp()
 
-      this.player = new Player(playerInfo.speed, playerInfo.color, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
+      this.player = new Player(playerInfo.speed, playerInfo.color, true, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
-      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.color, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
+      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, true, ghostsInfo.redGhost.color, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
     
     }  
 
@@ -200,6 +201,7 @@ class Engine {
       c.fillStyle = this.redGhost.color
       c.fill()
       c.stroke()
+
       
 
     }
@@ -245,6 +247,15 @@ class Engine {
       setTimeout(this.ghostInNormalMode.bind(this), edibleModeTime)
        
         
+    }
+
+    checkAllCharactersStatus() {
+      if(this.mode === 'flash') {
+        this.redGhost.isLive = false
+      } else {
+        this.player.isLive = false
+        this.isGameOn = false
+      }
     }
     
     // if player and pellet collides
@@ -322,7 +333,7 @@ class Engine {
           cell.updateContent('empty')
         }
 
-        // bottom to up
+        // going up
         if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY) {
           console.log('************************************')
 
@@ -413,12 +424,67 @@ class Engine {
 
       }
 
-      // in normal-mode, pacman meets ghost, pacman eats ghost
-      if(this.mode === 'normal') {
+      // adding a 10 pixel buffer
+      let ghostBuffer = 10
+      let redGhostTopLeftX = this.redGhost.xPos + ghostBuffer
+      let redGhostTopLeftY = this.redGhost.yPos + ghostBuffer
+      
+      let redGhostTopRightX = this.redGhost.xPos + deltaX - ghostBuffer
+      let redGhostTopRightY = redGhostTopLeftY
 
+      let redGhostBottomLeftX = redGhostTopLeftX
+      let redGhostBottomLeftY = this.redGhost.yPos + deltaY - ghostBuffer
+
+      // let redGhostBottomRightX = redGhostTopLeftX
+      // let redGhostBottomRightY = this.redGhost.yPos + deltaY - ghostBuffer
+
+      
+
+      // going right
+      if (playerTopRightX >= redGhostTopLeftX && playerTopLeftX < redGhostTopLeftX && this.redGhost.yPos === this.player.yPos) {
+        console.log('--- right --- ', playerTopRightX, redGhostTopLeftX)
+        console.log('collision detected --- pacman and ghost...')
+        console.log('************************************')
+
+        this.checkAllCharactersStatus()
       }
 
-      // in normal-mode, pacman meets ghost, ghost eats pacman, game ends
+      // going left
+      if (playerTopRightX > redGhostTopLeftX && playerTopLeftX <= redGhostTopRightX && this.redGhost.yPos === this.player.yPos) {
+        console.log('collision detected...')
+        console.log('************************************')
+        this.checkAllCharactersStatus()
+        
+      }
+
+      // going up
+      if (playerTopLeftY <= redGhostBottomLeftY && playerBottomLeftY > redGhostTopLeftY &&  this.redGhost.xPos === this.player.xPos) {
+        console.log('************************************')
+
+        console.log('playerTopLeftY', playerTopLeftY)
+        console.log('pelletBottomLeftY', redGhostBottomLeftY)
+        console.log('************************************')
+
+        console.log('collision detected...')
+        this.checkAllCharactersStatus()
+      }
+
+      // going down
+      if (playerTopLeftY < redGhostTopLeftY && playerBottomLeftY >= redGhostTopLeftY && this.redGhost.xPos === this.player.xPos ) {
+        console.log('--- down --- ', playerBottomLeftY, redGhostTopLeftY)
+
+        console.log('collision detected...')
+        console.log('************************************')
+        this.checkAllCharactersStatus()
+      }
+
+       // in flash-mode, pacman meets ghost, pacman eats ghost
+       if(this.mode === 'flash') {
+        // this.player.
+      }   
+
+
+      // in normal-mode, pacman meets ghost, ghost can get pacman, game ends
 
       
     }
@@ -612,11 +678,17 @@ function animation() {
 
   // await pause()
 
-  requestAnimationFrame(animation)
+  requestId = requestAnimationFrame(animation)
+
+  if (!engine.isGameOn) {
+    cancelAnimationFrame(requestId);
+    requestId = undefined;
+    console.log('game over ')
+  }
 
   engine.update()
 
-
+  
 }
 
 
