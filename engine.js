@@ -88,7 +88,7 @@ class Engine {
     constructor() {
       this.player = null
       this.redGhost = null
-
+      this.mode = 'normal'
       /*
       this.grid = {
         '0,0': '',
@@ -207,6 +207,9 @@ class Engine {
     ghostInEdibleMode() {
        // ghosts turn green for now
        this.redGhost.color = 'green'
+
+       this.mode = 'flash'
+
        console.log('big-pellet eaten -----------')
        
        switch (this.redGhost.direction) {
@@ -230,6 +233,8 @@ class Engine {
 
     ghostInNormalMode() {
       this.redGhost.color = 'red'
+
+      this.mode = 'normal'
     }
 
     bigPelletEaten() {
@@ -289,50 +294,39 @@ class Engine {
 
       let cell = this.grid.getCell(tempX, tempY)
 
-      //|| cell.content === 'big-pellet'
-
       if(cell.content === 'sm-pellet' ) {
         let pelletRadius = smPelletRadius
 
         let cellCoord = {x: tempX, y: tempY}
-        let pelletTopLeftX = cellCoord.x + smPelletRadius 
-        let pelletTopLeftY = cellCoord.y + smPelletRadius 
+        let pelletTopLeftX = cellCoord.x + deltaX/2 - smPelletRadius 
+        let pelletTopLeftY = cellCoord.y + deltaY/2 - smPelletRadius 
    
-        let pelletTopRightX = cellCoord.x + smPelletRadius 
+        let pelletTopRightX = cellCoord.x + smPelletRadius * 2
         let pelletTopRightY = cellCoord.y + smPelletRadius 
   
-        let pelletBottomLeftX = cellCoord.x + smPelletRadius 
-        let pelletBottomLeftY = cellCoord.y + smPelletRadius 
+        let pelletBottomLeftX = cellCoord.x + deltaX/2 - smPelletRadius  
+        let pelletBottomLeftY = cellCoord.y + deltaX/2 + smPelletRadius
   
         // left to right
-        if (direction === 'right' && playerTopLeftX <= pelletTopRightX && playerTopRightX > pelletTopRightX) {
+        if (direction === 'right' && playerTopRightX >= pelletTopLeftX) {
+          console.log('--- right --- ', playerTopRightX, pelletTopLeftX)
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
-
-          // if(cell.content === 'big-pellet') {
-          //   this.bigPelletEaten()
-          // }
-
         }
+
         // right to left
-        if (direction === 'left' && playerTopRightX >= pelletTopLeftX && playerTopLeftX < pelletTopLeftX) {
+        if (direction === 'left' && playerTopLeftX <= pelletTopRightX) {
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
-
-          // if(cell.content === 'big-pellet') {
-          //   this.bigPelletEaten()
-          // }
         }
 
         // bottom to up
-        if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY && playerBottomLeftY > pelletBottomLeftY) {
+        if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY) {
           console.log('************************************')
 
           console.log('playerTopLeftY', playerTopLeftY)
-          console.log('pelletBottomLeftY', pelletBottomLeftY)
-          console.log('playerBottomLeftY', playerBottomLeftY)
           console.log('pelletBottomLeftY', pelletBottomLeftY)
           console.log('************************************')
 
@@ -342,14 +336,12 @@ class Engine {
         }
 
         // going down
-        if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY && playerTopLeftY < pelletBottomLeftY) {
+        if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY ) {
+          console.log('--- down --- ', playerBottomLeftY, pelletTopLeftY)
+
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
-
-          // if(cell.content === 'big-pellet') {
-          //   this.bigPelletEaten()
-          // }
         }
 
         
@@ -377,9 +369,7 @@ class Engine {
           console.log('************************************')
           cell.updateContent('empty')
 
-          // if(cell.content === 'big-pellet') {
-            this.bigPelletEaten()
-          // }
+          this.bigPelletEaten()
 
         }
         // right to left
@@ -388,9 +378,7 @@ class Engine {
           console.log('************************************')
           cell.updateContent('empty')
 
-          // if(cell.content === 'big-pellet') {
-            this.bigPelletEaten()
-          // }
+          this.bigPelletEaten()
         }
 
         // bottom to up
@@ -417,15 +405,21 @@ class Engine {
           console.log('************************************')
           cell.updateContent('empty')
 
-          // if(cell.content === 'big-pellet') {
-            this.bigPelletEaten()
-          // }
+          this.bigPelletEaten()
         }
 
         
 
 
       }
+
+      // in normal-mode, pacman meets ghost, pacman eats ghost
+      if(this.mode === 'normal') {
+
+      }
+
+      // in normal-mode, pacman meets ghost, ghost eats pacman, game ends
+
       
     }
 
