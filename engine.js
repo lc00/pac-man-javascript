@@ -59,7 +59,7 @@ let direction
 const smPelletRadius = 5
 const bigPelletRadius = 10
 
-const edibleModeTime = 3000
+const edibleModeTime = 10000
 
 let requestId = null
 
@@ -106,7 +106,7 @@ class Engine {
       // this.pellet = new Pellet(20, 500, 100)
 
       // create grid instances
-      this.grid= new Grid(0,0,500,500,10,10, gridObj)
+      this.grid= new Grid(0,0,300,300,6,6, gridObj)
       this.grid.setUp()
 
       this.player = new Player(playerInfo.speed, playerInfo.color, true, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
@@ -190,17 +190,21 @@ class Engine {
 
 
       // draw ghost
-      c.beginPath()
-      // let ghostXTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
-      // let ghostYTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
+      // if(this.redGhost && this.redGhost.isLive) {
+        c.beginPath()
+        // let ghostXTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
+        // let ghostYTemp = ghostsInfo.redGhost.xPos + ghostsInfo.redGhost.radius
+  
+        let ghostXTemp = this.redGhost.xPos + ghostsInfo.redGhost.radius
+        let ghostYTemp = this.redGhost.yPos + ghostsInfo.redGhost.radius
+  
+        c.arc(ghostXTemp, ghostYTemp, ghostsInfo.redGhost.radius, 0, Math.PI*2, false)
+        c.fillStyle = this.redGhost.color
+        c.fill()
+        c.stroke()
+  
+      // }
 
-      let ghostXTemp = this.redGhost.xPos + ghostsInfo.redGhost.radius
-      let ghostYTemp = this.redGhost.yPos + ghostsInfo.redGhost.radius
-
-      c.arc(ghostXTemp, ghostYTemp, ghostsInfo.redGhost.radius, 0, Math.PI*2, false)
-      c.fillStyle = this.redGhost.color
-      c.fill()
-      c.stroke()
 
       
 
@@ -251,7 +255,13 @@ class Engine {
 
     checkAllCharactersStatus() {
       if(this.mode === 'flash') {
-        this.redGhost.isLive = false
+        this.redGhost.color = ghostsInfo.redGhost.color
+
+        // redGhost goes back to its den
+        this.redGhost.xPos = ghostsInfo.redGhost.xPos
+        this.redGhost.yPos = ghostsInfo.redGhost.yPos
+
+
       } else {
         this.player.isLive = false
         this.isGameOn = false
@@ -478,14 +488,9 @@ class Engine {
         this.checkAllCharactersStatus()
       }
 
-       // in flash-mode, pacman meets ghost, pacman eats ghost
-       if(this.mode === 'flash') {
-        // this.player.
-      }   
 
 
-      // in normal-mode, pacman meets ghost, ghost can get pacman, game ends
-
+      
       
     }
 
@@ -710,14 +715,14 @@ let gridObj = {
 
   '0,100': 'sm-pellet',
   '50,100': 'empty',
-  '100,100': 'empty',
+  '100,100': 'big-pellet',
   '150,100': 'sm-pellet',
   '200,100': 'sm-pellet',
   '250,100': 'sm-pellet',
 
 
   '0,150': 'sm-pellet',
-  '50,150': 'wall',
+  '50,150': 'big-pellet',
   '100,150': 'empty',
   '150,150': 'wall',
   '200,150': 'sm-pellet',
@@ -732,7 +737,7 @@ let gridObj = {
   '250,200': 'sm-pellet',
 
   '0,250': 'empty',
-  '50,250': 'empty',
+  '50,250': 'big-pellet',
   '100,250': 'empty',
   '150,250': 'sm-pellet',
   '200,250': 'wall',
