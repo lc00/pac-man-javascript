@@ -59,10 +59,10 @@ let direction
 const smPelletRadius = 5
 const bigPelletRadius = 10
 
-const edibleModeTime = 10000
+const edibleModeTime = 5000
 
 let requestId = null
-
+let timeoutId = null
 
 // function pause() {
 //   return new Promise((resolve, reject) => {
@@ -111,7 +111,7 @@ class Engine {
 
       this.player = new Player(playerInfo.speed, playerInfo.color, true, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
-      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, true, ghostsInfo.redGhost.color, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
+      this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.color, true, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
     
     }  
 
@@ -206,7 +206,9 @@ class Engine {
       // }
 
 
-      
+      if(pelletCount === 0 )
+        this.isGameOn = false
+        console.log('you win')
 
     }
 
@@ -216,7 +218,7 @@ class Engine {
 
        this.mode = 'flash'
 
-       console.log('big-pellet eaten -----------')
+       console.log('!!! big-pellet eaten -----------')
        
        switch (this.redGhost.direction) {
          case 'left':
@@ -247,10 +249,14 @@ class Engine {
 
       this.ghostInEdibleMode()
 
-      
-      setTimeout(this.ghostInNormalMode.bind(this), edibleModeTime)
+      // reset timeout
+      if(timeoutId) 
+        clearTimeout(timeoutId)
        
-        
+      timeoutId = setTimeout(this.ghostInNormalMode.bind(this), edibleModeTime)
+      
+       
+      
     }
 
     checkAllCharactersStatus() {
@@ -334,17 +340,21 @@ class Engine {
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
+          pelletCount--
+
         }
 
         // right to left
-        if (direction === 'left' && playerTopLeftX <= pelletTopRightX) {
+         if (direction === 'left' && playerTopLeftX <= pelletTopRightX) {
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
+          pelletCount--
+
         }
 
         // going up
-        if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY) {
+         if (direction === 'up' && playerTopLeftY <= pelletBottomLeftY) {
           console.log('************************************')
 
           console.log('playerTopLeftY', playerTopLeftY)
@@ -353,19 +363,21 @@ class Engine {
 
           console.log('collision detected...')
           cell.updateContent('empty')
+          pelletCount--
 
         }
 
         // going down
-        if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY ) {
+         if (direction === 'down' && playerBottomLeftY >= pelletTopLeftY ) {
           console.log('--- down --- ', playerBottomLeftY, pelletTopLeftY)
 
           console.log('collision detected...')
           console.log('************************************')
           cell.updateContent('empty')
+          pelletCount--
+
         }
 
-        
 
 
       }
@@ -391,6 +403,7 @@ class Engine {
           cell.updateContent('empty')
 
           this.bigPelletEaten()
+          pelletCount--
 
         }
         // right to left
@@ -400,6 +413,8 @@ class Engine {
           cell.updateContent('empty')
 
           this.bigPelletEaten()
+          pelletCount--
+
         }
 
         // bottom to up
@@ -416,6 +431,8 @@ class Engine {
           cell.updateContent('empty')
 
           this.bigPelletEaten()
+        pelletCount--
+
 
 
         }
@@ -427,6 +444,8 @@ class Engine {
           cell.updateContent('empty')
 
           this.bigPelletEaten()
+          pelletCount--
+
         }
 
         
@@ -457,6 +476,7 @@ class Engine {
         console.log('************************************')
 
         this.checkAllCharactersStatus()
+        
       }
 
       // going left
@@ -487,7 +507,6 @@ class Engine {
         console.log('************************************')
         this.checkAllCharactersStatus()
       }
-
 
 
       
@@ -702,48 +721,50 @@ let gridObj = {
   '50,0': 'big-pellet',
   '100,0': 'sm-pellet',
   '150,0': 'sm-pellet',
-  '200,0': 'sm-pellet',
-  '250,0': 'sm-pellet',
+  '200,0': 'wall',
+  '250,0': 'big-pellet',
 
   '0,50': 'sm-pellet',
-  '50,50': 'wall',
-  '100,50': 'empty',
+  '50,50': 'sm-pellet',
+  '100,50': 'sm-pellet',
   '150,50': 'wall',
   '200,50': 'sm-pellet',
   '250,50': 'sm-pellet',
 
 
   '0,100': 'sm-pellet',
-  '50,100': 'empty',
-  '100,100': 'big-pellet',
+  '50,100': 'wall',
+  '100,100': 'sm-pellet',
   '150,100': 'sm-pellet',
   '200,100': 'sm-pellet',
   '250,100': 'sm-pellet',
 
 
   '0,150': 'sm-pellet',
-  '50,150': 'big-pellet',
-  '100,150': 'empty',
+  '50,150': 'sm-pellet',
+  '100,150': 'sm-pellet',
   '150,150': 'wall',
   '200,150': 'sm-pellet',
   '250,150': 'sm-pellet',
 
 
-  '0,200': 'empty',
-  '50,200': 'empty',
-  '100,200': 'empty',
+  '0,200': 'sm-pellet',
+  '50,200': 'sm-pellet',
+  '100,200': 'sm-pellet',
   '150,200': 'sm-pellet',
   '200,200': 'wall',
   '250,200': 'sm-pellet',
 
-  '0,250': 'empty',
-  '50,250': 'big-pellet',
-  '100,250': 'empty',
+  '0,250': 'big-pellet',
+  '50,250': 'sm-pellet',
+  '100,250': 'sm-pellet',
   '150,250': 'sm-pellet',
   '200,250': 'wall',
-  '250,250': 'sm-pellet'
+  '250,250': 'big-pellet'
 
 }
+
+let pelletCount = 6*6-6
 
 let engine = new Engine() 
 engine.setUp()
