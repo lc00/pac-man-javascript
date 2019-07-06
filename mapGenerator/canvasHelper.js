@@ -12,7 +12,13 @@ function CanvasHelper(domNode, width, height) {
         if(stroke) canvas.strokeRect(x, y, width, height);
     };
 
+    const deleteAll = (width, height) => {
+        canvas.clearRect(0, 0, width, height)
+    };
+
     return {
-        rectangle
+        rectangle,
+        deleteAll
     };
 }
+

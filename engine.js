@@ -90,22 +90,12 @@ class Engine {
       this.redGhost = null
       this.mode = 'normal'
       this.isGameOn = true
-      /*
-      this.grid = {
-        '0,0': '',
-        '50,0': ''
-      } 
-      */
-
-
-
     }
 
     // setup
     setUp() {
-      // this.pellet = new Pellet(20, 500, 100)
-
       // create grid instances
+      //              Grid(startX,startY,width,height,numXCell,numYCell, gridObj)
       this.grid= new Grid(0,0,300,300,6,6, gridObj)
       this.grid.setUp()
 
@@ -260,7 +250,7 @@ class Engine {
       
     }
 
-    checkAllCharactersStatus() {
+    updateCharactersStatus() {
       if(this.mode === 'flash') {
         this.redGhost.color = ghostsInfo.redGhost.color
 
@@ -476,7 +466,7 @@ class Engine {
         console.log('collision detected --- pacman and ghost...')
         console.log('************************************')
 
-        this.checkAllCharactersStatus()
+        this.updateCharactersStatus()
         
       }
 
@@ -484,7 +474,7 @@ class Engine {
       if (playerTopRightX > redGhostTopLeftX && playerTopLeftX <= redGhostTopRightX && this.redGhost.yPos === this.player.yPos) {
         console.log('collision detected...')
         console.log('************************************')
-        this.checkAllCharactersStatus()
+        this.updateCharactersStatus()
         
       }
 
@@ -497,7 +487,7 @@ class Engine {
         console.log('************************************')
 
         console.log('collision detected...')
-        this.checkAllCharactersStatus()
+        this.updateCharactersStatus()
       }
 
       // going down
@@ -506,7 +496,7 @@ class Engine {
 
         console.log('collision detected...')
         console.log('************************************')
-        this.checkAllCharactersStatus()
+        this.updateCharactersStatus()
       }
 
 
@@ -717,55 +707,65 @@ function animation() {
 }
 
 
-let gridObj = {
+
+const cellSpacing = 50
+let grid = {
   '0,0': 'sm-pellet',
-  '50,0': 'big-pellet',
-  '100,0': 'sm-pellet',
-  '150,0': 'sm-pellet',
-  '200,0': 'wall',
-  '250,0': 'big-pellet',
+  '1,0': 'big-pellet',
+  '2,0': 'sm-pellet',
+  '3,0': 'sm-pellet',
+  '4,0': 'sm-pellet',
 
-  '0,50': 'sm-pellet',
-  '50,50': 'sm-pellet',
-  '100,50': 'sm-pellet',
-  '150,50': 'wall',
-  '200,50': 'sm-pellet',
-  '250,50': 'sm-pellet',
+  '0,1': 'sm-pellet',
+  '1,1': 'wall',
+  '2,1': 'sm-pellet',
+  '3,1': 'sm-pellet',
+  '4,1': 'sm-pellet',
 
-
-  '0,100': 'sm-pellet',
-  '50,100': 'wall',
-  '100,100': 'sm-pellet',
-  '150,100': 'sm-pellet',
-  '200,100': 'sm-pellet',
-  '250,100': 'sm-pellet',
+  '0,2': 'sm-pellet',
+  '1,2': 'wall',
+  '2,2': 'wall',
+  '3,2': 'sm-pellet',
+  '4,2': 'sm-pellet',
 
 
-  '0,150': 'sm-pellet',
-  '50,150': 'sm-pellet',
-  '100,150': 'sm-pellet',
-  '150,150': 'wall',
-  '200,150': 'sm-pellet',
-  '250,150': 'sm-pellet',
+  '0,3': 'sm-pellet',
+  '1,3': 'sm-pellet',
+  '2,3': 'sm-pellet',
+  '3,3': 'sm-pellet',
+  '4,3': 'sm-pellet',
 
-
-  '0,200': 'sm-pellet',
-  '50,200': 'sm-pellet',
-  '100,200': 'sm-pellet',
-  '150,200': 'sm-pellet',
-  '200,200': 'wall',
-  '250,200': 'sm-pellet',
-
-  '0,250': 'big-pellet',
-  '50,250': 'sm-pellet',
-  '100,250': 'sm-pellet',
-  '150,250': 'sm-pellet',
-  '200,250': 'wall',
-  '250,250': 'big-pellet'
+  '0,4': 'big-pellet',
+  '1,4': 'wall',
+  '2,4': '',
+  '3,4': 'sm-pellet',
+  '4,4': 'wall'
 
 }
 
-let pelletCount = 6*6-6
+let gridObj = {}
+
+function scaleGrid(grid) {
+  for (let key in grid) {
+    let [ x, y ]  = key.split(',')
+    let value = grid[key]
+    x = x * cellSpacing
+    y = y * cellSpacing
+
+    gridObj[x + ',' + y] = value
+
+  }
+  return gridObj
+}
+
+scaleGrid(grid)
+
+
+
+
+// let pelletCount = 6*6-6
+ let pelletCount = 19
+
 
 let engine = new Engine() 
 engine.setUp()
@@ -773,5 +773,4 @@ engine.listen()
 engine.draw()
 
 animation()
-
 
