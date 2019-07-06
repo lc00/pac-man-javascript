@@ -206,9 +206,10 @@ class Engine {
       // }
 
 
-      if(pelletCount === 0 )
+      if(pelletCount === 0 ) {
         this.isGameOn = false
         console.log('you win')
+      }
 
     }
 
