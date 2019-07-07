@@ -763,6 +763,8 @@ scaleGrid(grid)
 
 
 
+
+
 // let pelletCount = 6*6-6
  let pelletCount = 19
 

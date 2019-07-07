@@ -11,7 +11,7 @@ class Ghost extends Character {
   
     }
 
-    determinePos(direction, x, y, deltaX, deltaY) {
+    move(direction, x, y, deltaX, deltaY) {
       switch (direction) {
         case 'left':
             x = x - deltaX  
@@ -51,9 +51,12 @@ class Ghost extends Character {
       }
     }
 
+    // todo 
+    determineDirection(currentPos, nextPos) {
 
+    }
 
-    maybeMove(grid) {
+    maybeMove(grid, pacmanPos, ghostPos) {
       let isAtCenter = this.isAtCenter()
       let deltaX = grid.width / grid.numXCell
       let deltaY = grid.height / grid.numYCell
@@ -65,104 +68,34 @@ class Ghost extends Character {
         let horizontalDirArr = ['left', 'right']
         let verticalDirArr = ['up', 'down']
         let dirArr = ['right', 'down', 'left', 'up']
-    // console.log('isAtCenter', isAtCenter )
-    // console.log('this.player.userDirectionInput', this.player.userDirectionInput)
-    // console.log('userDirectionInput', userDirectionInput)
 
-      // if at center, determine if current direction is viable
-      // if yes, continue 
-      // else do a random direction
-      if (isAtCenter) {   
-        
-        
-        let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
-        tempX = newPos.x
-        tempY = newPos.y
-
-        let nextCell = grid.getCell(tempX, tempY)
-        let pos
-
-       
-
+        if (isAtCenter) {
+          let arr = this.bfs(grid, pacmanPos, ghostPos)
+          let newPos = arr[0].split(',')
+          let x = newPos[0]
+          let y = newPos[1]
   
-        if(nextCell && nextCell.content === 'wall' || nextCell === false){
-          //   // clear pac-man's previous position in cell
-          //   // let prevX = this.player.xPos
-          //   // let prevY = this.player.yPos
-          //   // let str = prevX + ',' + prevY
-          //   // grid.cells[str].content = 'empty'
-    
-          //   pos = this.move(this.direction)
-          //   this.xPos = pos.xPos
-          //   this.yPos = pos.yPos
-          
-          let randNum = Math.floor(Math.random() * 4)
-          this.direction = dirArr[randNum]
-          //  this.direction = 'left'
+          let deltaX = 50
+          let deltaY = 50
+  
+          //todo 
+          // determine direction
+          let direction = this.determineDirection(currentPos, nextPos)
+  
+        } 
 
-          let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
-            tempX = newPos.x
-            tempY = newPos.y
-        }
-         
-      }
-      // not at center, continue at the current direction
-      // else {
-      //   if(this.player.userDirectionInput !== null) {
-      //     if(horizontalDirArr.indexOf(this.player.direction) >= 0 
-      //         && horizontalDirArr.indexOf(this.player.userDirectionInput) >= 0) {
-      //       this.player.direction = this.player.userDirectionInput
-      //     } 
-      //     else if ( verticalDirArr.indexOf(this.player.direction) >=0
-      //         && verticalDirArr.indexOf(this.player.userDirectionInput) >= 0){
-      //       this.player.direction = this.player.userDirectionInput
-      //     }
-      //   }
+        // todo 
+        // not at center, keep moving in the current direction
+        else {
 
-      
-      // not center
-      else {
-        switch (this.direction ) {
-            case 'left':
-                tempX = (Math.floor(this.xPos / deltaX) ) * deltaX
-                tempY = this.yPos
-                break
-            case 'right':
-                tempX = (Math.floor(this.xPos / deltaX) + 1) * deltaX
-                tempY = this.yPos
-                break
-            case 'up':
-                tempY = (Math.floor(this.yPos / deltaY) ) * deltaY
-                tempX = this.xPos
-                break
-            case 'down':
-                tempY = (Math.floor(this.yPos / deltaY) + 1) * deltaY
-                tempX = this.xPos
-                break
-          }
-          // }
         }
 
-    let nextCell = grid.getCell(tempX, tempY)
-    let pos
 
-      if(nextCell && nextCell.content !== 'wall'){
-        // clear pac-man's previous position in cell
-        // let prevX = this.player.xPos
-        // let prevY = this.player.yPos
-        // let str = prevX + ',' + prevY
-        // grid.cells[str].content = 'empty'
 
-        pos = this.move(this.direction)
+        pos = this.move(direction, x, y, deltaX, deltaY)
         this.xPos = pos.xPos
         this.yPos = pos.yPos
-      }
-      else {
-        pos = {
-          xPos: this.xPos,
-          yPos: this.yPos
-        }
-      }
+  
       
       
       console.log(`ghost direction ${this.direction}`)
@@ -171,4 +104,180 @@ class Ghost extends Character {
       return pos
 
     }
+
+    isNeighbor(arrayItem, key) {
+      console.log('arrayItem', arrayItem)
+      let [x,y] = arrayItem.split(',')
+    
+      // let [keyX, keyY] = key.split(',')
+    
+      let leftItem = Number(x) - 1 + ',' + Number(y)
+      let rightItem = Number(x) + 1 + ',' + Number(y)
+      let topItem = Number(x) + ',' + (Number(y) - 1)
+      let bottomItem = Number(x) + ',' + (Number(y) + 1)
+    
+      console.log('leftItem', leftItem)
+      console.log('rightItem', rightItem)
+      console.log('topItem', topItem)
+      console.log('bottomItem', bottomItem)
+    
+      switch (key) {
+        case leftItem:
+        case rightItem:
+        case topItem:
+        case bottomItem:
+          return true
+        default:
+          return false
+      }
+    
+    
+    }
+  
+    bfs(grid, pacmanPos, ghostPos) {
+      let visited = []
+      let queue = []
+      let pathArr = []
+    
+      // add nodes to queue
+      queue.push(ghostPos)
+    
+      // shift one
+      while(queue.length > 0) {
+        let key = queue.shift()
+        console.log('')
+        console.log('key...', key)
+    
+          // is it visited
+        if(visited.indexOf(key) >= 0)  continue
+        else {
+        // if no, explore
+        // check if cell exist
+    
+        // does it have pac-man
+        // if yes, return
+          if (key === pacmanPos) {
+                    // go through each array in pathArr to find if the array's last item is a neighbor for
+            // this key
+            for (let i=0; i<pathArr.length; i++) {
+              let arr = pathArr[i]
+              let item
+              arr.length <= 1 ? item = arr[0] : item = arr[arr.length-1]
+    
+    console.log(' pac-man pathArr', pathArr)
+    console.log('pac-man arr', arr)
+    console.log('pac-man arr[arr.length-1]', arr[arr.length-1])
+    console.log('pac-man item!!', item)
+    
+            // if yes, add into this array
+              if(isNeighbor(item, key))  {
+                arr.push(key)
+                pathArr.push(arr)
+                console.log('!!! pathArr !!!', pathArr)
+    
+                // take out the starting pos of ghost
+                arr.shift()
+                return arr
+              }
+    
+              // else, check the previous item if it's a neighbor
+              else {
+                //  if yes, create a copy of this array and add key into this array
+                let item
+                arr.length <= 2 ? item = arr[0] : item = arr[arr.length-2]
+    
+                if(isNeighbor(item, key)) {
+                  let newArr = JSON.parse(JSON.stringify(arr))
+                  newArr.pop()
+                  newArr.push(key)
+                  pathArr.push(newArr)
+                  
+    
+                // take out the starting pos of ghost
+                  newArr.shift()
+                  return newArr
+                } 
+                else continue
+              }
+            }
+          }
+          
+        // else, add its neighbors that don't have a wall
+          else {
+    
+            // go through each array in pathArr to find if the array's last item is a neighbor for
+            // this key
+    
+            if(pathArr.length === 0)  {
+              let arr = []
+              arr.push(key)
+              pathArr.push(arr)
+            }
+            else {
+              for (let i=0; i<pathArr.length; i++) {
+                let arr = pathArr[i]
+                let item
+                arr.length <= 1 ? item = arr[0] : item = arr[arr.length-1]
+    
+      console.log('pathArr', pathArr)
+      console.log('arr', arr)
+      console.log('arr[arr.length-1]', arr[arr.length-1])
+      console.log('item!!', item)
+              // if yes, add into this array
+                if(isNeighbor(item, key))  {
+                  arr.push(key)
+                  break
+                }
+      
+              // else, check the previous item if it's a neighbor
+                else {
+                  //  if yes, create a copy of this array and add key into this array
+                  let item
+                  arr.length <= 2 ? item = arr[0] : item = arr[arr.length-2]
+    
+                  if(isNeighbor(item, key)) {
+                    let newArr = JSON.parse(JSON.stringify(arr))
+                    newArr.pop()
+                    newArr.push(key)
+                    pathArr.push(newArr)
+                    break
+                  } 
+                  else continue
+                }
+              }
+      
+            }
+    
+            visited.push(key)
+    
+            let coordArr = key.split(',')
+            let [ x , y ] = coordArr
+            let left = Number(x) - 1 + ',' + Number(y)
+            let right = Number(x) + 1 + ',' + Number(y)
+            let top = Number(x) + ',' + (Number(y) - 1)
+            let bottom = Number(x) + ',' + (Number(y) + 1)
+    
+            let neighborArr = []
+            neighborArr.push(left)
+            neighborArr.push(top)
+            neighborArr.push(right)
+            neighborArr.push(bottom)  
+    
+            neighborArr.forEach(key => {
+              if (key in grid && grid[key] !== 'wall') {
+                queue.push(key)
+      
+              }
+            })
+            
+          
+            console.log('queue...', queue)    
+            console.log('!!! pathArr !!!', pathArr)
+    
+          }
+            
+        }
+      }
+    }
+    
 }
