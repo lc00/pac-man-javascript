@@ -643,38 +643,36 @@ class Engine {
       // first time, no nextPos for ghost
 
 
-      // if at center of a cell
-      if(this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0) {
+      // if at center of a cell and normal mode
+      if(this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0 && this.mode === 'normal') {
        
         // if(this.player.xPos % deltaX !== 0 && this.player.yPos % deltaY !== 0) {
           tempXPos = Math.floor(this.player.xPos / deltaX) * deltaX
           tempYPos = Math.floor(this.player.yPos / deltaY) * deltaY
           pacmanPos = tempXPos + ',' + tempYPos
-  
-        // }
-        // else {
-        //   pacmanPos = this.player.xPos + ',' + this.player.yPos
-        // }      
-  
-  
 
-        // update ghost position
-        nextPos = this.redGhost.maybeMove(gridObj, pacmanPos, redGhostPos)
+          // update ghost position
+          nextPos = this.redGhost.maybeMove(gridObj, pacmanPos, redGhostPos)
+      }
+      else {  
+          // update ghost position
+          nextPos = this.redGhost.random(this.grid)
+      }
+      // else {
+
+      // }
+
+              // store nextPos
+        // nextPos = nextPos.split(',')
+        this.redGhost.nextXPos = nextPos.xPos
+        this.redGhost.nextYPos = nextPos.yPos
+
+        nextPos = nextPos.xPos + ',' + nextPos.yPos
+
+       
  // update direction
         this.redGhost.direction = this.redGhost.determineDirection(currentPos, nextPos)
         if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
-
-
-        // store nextPos
-        nextPos = nextPos.split(',')
-        this.redGhost.nextXPos = nextPos[0]
-        this.redGhost.nextYPos = nextPos[1]
-
-       
-
-      }
-
- 
 
       let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
       this.redGhost.xPos = ghostPos.xPos
