@@ -369,6 +369,7 @@ random(grid) {
 
   let tempX
     let tempY
+    let nextPos
 
     // let userDirectionInput = this.player.userDirectionInput
     let horizontalDirArr = ['left', 'right']
@@ -384,14 +385,19 @@ random(grid) {
     let arr = this.getAccessibleNeighbors(grid, key)
     let len = arr.length
 
-    if(len === 1)   return arr[0]
+    if(len <= 2) {
+      nextPos = arr[0]
+    }
     else {
       let randNum = Math.floor(Math.random() * len)
-      this.direction = dirArr[randNum]
+
+      nextPos = arr[randNum]
     }
   }
 
-  // if not at center, return next cell coord
+  this.direction = this.determineDirection(this.xPos + ',' + this.yPos, nextPos)
+
+  //return next cell coord
   let nextCell = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
   let xPos = nextCell.x
   let yPos = nextCell.y

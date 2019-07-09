@@ -667,7 +667,9 @@ class Engine {
         nextPos = nextPos.xPos + ',' + nextPos.yPos
 
       }
-      else if (this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0 && this.mode === 'flash'){  
+      // when it's not at center and in flash mode
+      // whwen it's at center and in flash mode
+      else if (this.mode === 'flash'){  
         // update ghost position
         nextPos = this.redGhost.random(this.grid.cells)
 
