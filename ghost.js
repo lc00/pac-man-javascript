@@ -5,28 +5,33 @@ class Ghost extends Character {
         this.yPos = yPos
         this.direction = direction
         this.userDirectionInput = null
+        this.nextXPos = null
+        this.nextYPos = null
     }
   
     eat() {
   
     }
 
-    move(direction, x, y, deltaX, deltaY) {
+    move(direction, xPos, yPos) {
+      xPos = Number(this.xPos)
+      yPos = Number(this.yPos)
+
       switch (direction) {
         case 'left':
-            x = x - deltaX  
+            xPos = xPos - this.speed  
             break
         case 'right':
-            x = x + deltaX  
+            xPos = xPos + this.speed
             break
         case 'up':
-            y = y - deltaY
+            yPos = yPos - this.speed
             break
         case 'down':
-            y = y + deltaY
+            yPos = yPos + this.speed
             break
       }
-      return {x, y}
+      return {xPos, yPos}
     }
   
     isAtCenter() {
@@ -53,7 +58,15 @@ class Ghost extends Character {
 
     // todo 
     determineDirection(currentPos, nextPos) {
-
+      let result
+      let [xCurrent, yCurrent] = currentPos.split(',')
+      let [xNext, yNext] = nextPos.split(',')
+      
+      if(xNext - xCurrent > 0)        return 'right'
+      else if (xNext - xCurrent < 0)  return 'left'
+      else if (yNext - yCurrent > 0)  return 'down'
+      else if (yNext - yCurrent < 0)  return 'up'
+      else                            return undefined
     }
 
     maybeMove(grid, pacmanPos, ghostPos) {
@@ -63,45 +76,17 @@ class Ghost extends Character {
 
       let tempX
         let tempY
-        let newPos
+
         // let userDirectionInput = this.player.userDirectionInput
         let horizontalDirArr = ['left', 'right']
         let verticalDirArr = ['up', 'down']
         let dirArr = ['right', 'down', 'left', 'up']
 
-        if (isAtCenter) {
+        // if (isAtCenter) {
           let arr = this.bfs(grid, pacmanPos, ghostPos)
-          let newPos = arr[0].split(',')
-          let x = newPos[0]
-          let y = newPos[1]
-  
-          let deltaX = 50
-          let deltaY = 50
-  
-          //todo 
-          // determine direction
-          let direction = this.determineDirection(currentPos, nextPos)
-  
-        } 
+          let nextPos = arr[0]
 
-        // todo 
-        // not at center, keep moving in the current direction
-        else {
-
-        }
-
-
-
-        pos = this.move(direction, x, y, deltaX, deltaY)
-        this.xPos = pos.xPos
-        this.yPos = pos.yPos
-  
-      
-      
-      console.log(`ghost direction ${this.direction}`)
-      console.log(`ghost xPos: ${this.xPos}, ghost yPos: ${this.yPos}`)
-
-      return pos
+        return nextPos
 
     }
 
@@ -111,10 +96,10 @@ class Ghost extends Character {
     
       // let [keyX, keyY] = key.split(',')
     
-      let leftItem = Number(x) - 1 + ',' + Number(y)
-      let rightItem = Number(x) + 1 + ',' + Number(y)
-      let topItem = Number(x) + ',' + (Number(y) - 1)
-      let bottomItem = Number(x) + ',' + (Number(y) + 1)
+      let leftItem = Number(x) - 50 + ',' + Number(y)
+      let rightItem = Number(x) + 50 + ',' + Number(y)
+      let topItem = Number(x) + ',' + (Number(y) - 50)
+      let bottomItem = Number(x) + ',' + (Number(y) + 50)
     
       console.log('leftItem', leftItem)
       console.log('rightItem', rightItem)
@@ -147,6 +132,10 @@ class Ghost extends Character {
         let key = queue.shift()
         console.log('')
         console.log('key...', key)
+
+        if(key == '0,200') {
+          console.log('blah')
+        }
     
           // is it visited
         if(visited.indexOf(key) >= 0)  continue
@@ -170,7 +159,7 @@ class Ghost extends Character {
     console.log('pac-man item!!', item)
     
             // if yes, add into this array
-              if(isNeighbor(item, key))  {
+              if(this.isNeighbor(item, key))  {
                 arr.push(key)
                 pathArr.push(arr)
                 console.log('!!! pathArr !!!', pathArr)
@@ -186,7 +175,7 @@ class Ghost extends Character {
                 let item
                 arr.length <= 2 ? item = arr[0] : item = arr[arr.length-2]
     
-                if(isNeighbor(item, key)) {
+                if(this.isNeighbor(item, key)) {
                   let newArr = JSON.parse(JSON.stringify(arr))
                   newArr.pop()
                   newArr.push(key)
@@ -224,7 +213,11 @@ class Ghost extends Character {
       console.log('arr[arr.length-1]', arr[arr.length-1])
       console.log('item!!', item)
               // if yes, add into this array
-                if(isNeighbor(item, key))  {
+                if(key == '0,200') {
+                  console.log('blah')
+                }
+
+                if(this.isNeighbor(item, key))  {
                   arr.push(key)
                   break
                 }
@@ -235,7 +228,7 @@ class Ghost extends Character {
                   let item
                   arr.length <= 2 ? item = arr[0] : item = arr[arr.length-2]
     
-                  if(isNeighbor(item, key)) {
+                  if(this.isNeighbor(item, key)) {
                     let newArr = JSON.parse(JSON.stringify(arr))
                     newArr.pop()
                     newArr.push(key)
@@ -252,10 +245,10 @@ class Ghost extends Character {
     
             let coordArr = key.split(',')
             let [ x , y ] = coordArr
-            let left = Number(x) - 1 + ',' + Number(y)
-            let right = Number(x) + 1 + ',' + Number(y)
-            let top = Number(x) + ',' + (Number(y) - 1)
-            let bottom = Number(x) + ',' + (Number(y) + 1)
+            let left = Number(x) - 50 + ',' + Number(y)
+            let right = Number(x) + 50 + ',' + Number(y)
+            let top = Number(x) + ',' + (Number(y) - 50)
+            let bottom = Number(x) + ',' + (Number(y) + 50)
     
             let neighborArr = []
             neighborArr.push(left)
@@ -273,6 +266,10 @@ class Ghost extends Character {
           
             console.log('queue...', queue)    
             console.log('!!! pathArr !!!', pathArr)
+
+            if(key == '150,200' || key == '250,150')  {
+              console.log('hiii')
+            }
     
           }
             

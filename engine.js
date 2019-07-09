@@ -12,8 +12,8 @@ let c = canvas.getContext('2d')
 const playerInfo = {
   speed: 2,
   color: 'yellow',
-  xPos: 0,
-  yPos: 250,
+  xPos: 100,
+  yPos: 200,
   radius: 25,
   direction: 'right'
 }
@@ -618,7 +618,6 @@ class Engine {
         // let prevY = this.player.yPos
         // let str = prevX + ',' + prevY
         // this.grid.cells[str].content = 'empty'
-
         pos = this.player.move(this.player.direction)
         this.player.xPos = pos.xPos
         this.player.yPos = pos.yPos
@@ -628,13 +627,62 @@ class Engine {
 
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
 
+      let tempXPos,
+      tempYPos,
+      pacmanPos
 
-      // update ghost position
-      let ghostPos = this.redGhost.maybeMove(this.grid)
 
+      
+      let redGhostPos = this.redGhost.xPos + ',' + this.redGhost.yPos
+
+      
+      let nextPos
+     
+      let currentPos = this.redGhost.xPos + ',' + this.redGhost.yPos
+
+      // first time, no nextPos for ghost
+
+
+      // if at center of a cell
+      if(this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0) {
+       
+        // if(this.player.xPos % deltaX !== 0 && this.player.yPos % deltaY !== 0) {
+          tempXPos = Math.floor(this.player.xPos / deltaX) * deltaX
+          tempYPos = Math.floor(this.player.yPos / deltaY) * deltaY
+          pacmanPos = tempXPos + ',' + tempYPos
+  
+        // }
+        // else {
+        //   pacmanPos = this.player.xPos + ',' + this.player.yPos
+        // }      
+  
+  
+
+        // update ghost position
+        nextPos = this.redGhost.maybeMove(gridObj, pacmanPos, redGhostPos)
+ // update direction
+        this.redGhost.direction = this.redGhost.determineDirection(currentPos, nextPos)
+        if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
+
+
+        // store nextPos
+        nextPos = nextPos.split(',')
+        this.redGhost.nextXPos = nextPos[0]
+        this.redGhost.nextYPos = nextPos[1]
+
+       
+
+      }
+
+ 
+
+      let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
       this.redGhost.xPos = ghostPos.xPos
       this.redGhost.yPos = ghostPos.yPos
-
+    
+ 
+      console.log(`ghost direction ${this.redGhost.direction}`)
+      console.log(`ghost xPos: ${this.redGhost.xPos}, ghost yPos: ${this.redGhost.yPos}`)
 
       this.collisionDetection()
     
@@ -715,31 +763,42 @@ let grid = {
   '2,0': 'sm-pellet',
   '3,0': 'sm-pellet',
   '4,0': 'sm-pellet',
+  '5,0': 'sm-pellet',
 
   '0,1': 'sm-pellet',
   '1,1': 'wall',
   '2,1': 'sm-pellet',
   '3,1': 'sm-pellet',
   '4,1': 'sm-pellet',
+  '5,1': 'sm-pellet',
 
   '0,2': 'sm-pellet',
   '1,2': 'wall',
   '2,2': 'wall',
   '3,2': 'sm-pellet',
   '4,2': 'sm-pellet',
-
+  '5,2': 'sm-pellet',
 
   '0,3': 'sm-pellet',
   '1,3': 'sm-pellet',
   '2,3': 'sm-pellet',
   '3,3': 'sm-pellet',
   '4,3': 'sm-pellet',
+  '5,3': 'sm-pellet',
 
   '0,4': 'big-pellet',
   '1,4': 'wall',
-  '2,4': '',
+  '2,4': 'sm-pellet',
   '3,4': 'sm-pellet',
-  '4,4': 'wall'
+  '4,4': 'wall',
+  '5,4': 'sm-pellet',
+
+  '0,5': 'big-pellet',
+  '1,5': 'sm-pellet',
+  '2,5': 'sm-pellet',
+  '3,5': 'sm-pellet',
+  '4,5': 'wall',
+  '5,5': 'sm-pellet'
 
 }
 
@@ -766,7 +825,7 @@ scaleGrid(grid)
 
 
 // let pelletCount = 6*6-6
- let pelletCount = 19
+ let pelletCount = 30
 
 
 let engine = new Engine() 
