@@ -627,6 +627,11 @@ class Engine {
 
       console.log(`xPos: ${this.player.xPos}, yPos: ${this.player.yPos}`)
 
+
+
+
+      // update ghost position
+
       let tempXPos,
       tempYPos,
       pacmanPos
@@ -647,31 +652,37 @@ class Engine {
       if(this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0 && this.mode === 'normal') {
        
         // if(this.player.xPos % deltaX !== 0 && this.player.yPos % deltaY !== 0) {
-          tempXPos = Math.floor(this.player.xPos / deltaX) * deltaX
-          tempYPos = Math.floor(this.player.yPos / deltaY) * deltaY
-          pacmanPos = tempXPos + ',' + tempYPos
+        tempXPos = Math.floor(this.player.xPos / deltaX) * deltaX
+        tempYPos = Math.floor(this.player.yPos / deltaY) * deltaY
+        pacmanPos = tempXPos + ',' + tempYPos
 
-          // update ghost position
-          nextPos = this.redGhost.maybeMove(gridObj, pacmanPos, redGhostPos)
-      }
-      else {  
-          // update ghost position
-          nextPos = this.redGhost.random(this.grid)
-      }
-      // else {
+        // update ghost position
+        nextPos = this.redGhost.maybeMove(gridObj, pacmanPos, redGhostPos)
 
-      // }
-
-              // store nextPos
+        // store nextPos
         // nextPos = nextPos.split(',')
         this.redGhost.nextXPos = nextPos.xPos
         this.redGhost.nextYPos = nextPos.yPos
 
         nextPos = nextPos.xPos + ',' + nextPos.yPos
 
+      }
+      else if (this.redGhost.xPos % 50 === 0 && this.redGhost.yPos % 50 === 0 && this.mode === 'flash'){  
+        // update ghost position
+        nextPos = this.redGhost.random(this.grid.cells)
+
+        // store nextPos
+        // nextPos = nextPos.split(',')
+        this.redGhost.nextXPos = nextPos.xPos
+        this.redGhost.nextYPos = nextPos.yPos
+
+        nextPos = nextPos.xPos + ',' + nextPos.yPos
+
+      }
+
        
  // update direction
-        this.redGhost.direction = this.redGhost.determineDirection(currentPos, nextPos)
+        this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
         if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
 
       let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)

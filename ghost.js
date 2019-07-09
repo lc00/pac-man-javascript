@@ -129,7 +129,7 @@ class Ghost extends Character {
     
     }
 
-    getAccessibleNeighbors(grid, key) {
+    getAccessibleNeighbors_bfs(grid, key) {
       let coordArr = key.split(',')
       let [ x , y ] = coordArr
       let left = Number(x) - 50 + ',' + Number(y)
@@ -147,6 +147,31 @@ class Ghost extends Character {
 
       neighborArr.forEach(key => {
         if (key in grid && grid[key] !== 'wall') {
+          resultArr.push(key)
+        }
+      })
+
+      return resultArr
+    }
+
+    getAccessibleNeighbors(grid, key) {
+      let coordArr = key.split(',')
+      let [ x , y ] = coordArr
+      let left = Number(x) - 50 + ',' + Number(y)
+      let right = Number(x) + 50 + ',' + Number(y)
+      let top = Number(x) + ',' + (Number(y) - 50)
+      let bottom = Number(x) + ',' + (Number(y) + 50)
+
+      let resultArr = []
+
+      let neighborArr = []
+      neighborArr.push(left)
+      neighborArr.push(top)
+      neighborArr.push(right)
+      neighborArr.push(bottom)  
+
+      neighborArr.forEach(key => {
+        if (key in grid && grid[key].content !== 'wall') {
           resultArr.push(key)
         }
       })
@@ -278,7 +303,7 @@ class Ghost extends Character {
     
             visited.push(key)
 
-            let accessibleNeighborArr = this.getAccessibleNeighbors(grid, key)
+            let accessibleNeighborArr = this.getAccessibleNeighbors_bfs(grid, key)
 
             accessibleNeighborArr.forEach(item => {
               queue.push(item)
