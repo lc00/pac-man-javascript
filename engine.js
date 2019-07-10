@@ -684,33 +684,52 @@ class Engine {
         let isCenter = this.redGhost.isAtCenter()
 
         if(isCenter) {
+          console.log('flash - isCenter = true')
           // check for 3 or 4 way junction
           let isJunction = this.redGhost.checkJunction(this.grid.cells)
           // if yes, random, but not the one it came from
           if(isJunction)  {
+            console.log('flash - isJunction = true')
             nextPos = this.redGhost.semiRandom(this.grid.cells)
+            console.log('flash - isJunction nextPos:', nextPos)
+             
           }
-
+          // else keep the current directin
+          else {
+            console.log('flash - isJunction = false')
+            nextPos = this.redGhost.random(this.grid.cells)
+            console.log('flash - isJunction nextPos:', nextPos)
+             
+          }
+         
           // store nextPos
-          // nextPos = nextPos.split(',')
-          this.redGhost.nextXPos = nextPos.xPos
-          this.redGhost.nextYPos = nextPos.yPos
+            // nextPos = nextPos.split(',')
+            this.redGhost.nextXPos = nextPos.xPos
+            this.redGhost.nextYPos = nextPos.yPos
 
-          nextPos = nextPos.xPos + ',' + nextPos.yPos
+            nextPos = nextPos.xPos + ',' + nextPos.yPos
 
-          // update direction
-          this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
-          if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
+            // update direction
+            this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
+            if(!this.redGhost.direction) {
+              throw new Error('flash - redGhost direction undefined')
+            }
+
+            console.log('flash nextPos',  this.redGhost.nextXPos, this.redGhost.nextYPos)
+
 
         }
 
         // note that if not at center, continue in the current direction with the this.redGhost.nextXpos  
         // and this.redGhost.nextXpos
         else {
-          // check 
+          // nextPos = this.redGhost.xPos + ',' + this.redGhost.yPos
+
+          // update direction
+          // this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
+          // if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
         }
       }
-
 
       let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
       this.redGhost.xPos = ghostPos.xPos

@@ -403,12 +403,22 @@ semiRandom(grid) {
 
   console.log('-------------- this direction: ', this.direction, '--------------')
   console.log('-----------------------------------------------------------------')
+
+  console.log('availableDirectionArr', availableDirectionArr)
   let oppositeDir = this.getOppositeDirection(this.direction)
+  console.log('oppositeDir', oppositeDir)
 
   let index = availableDirectionArr.indexOf(oppositeDir)
 
-  if(index >= 0)  availableDirectionArr.splice(index, 1)
-  else           { throw new Error('semiRandom function - something went wrong with availableDirectionArr')
+  if(index >= 0)  {
+    availableDirectionArr.splice(index, 1)
+    console.log('availableDirectionArr', availableDirectionArr)
+
+  }
+
+
+  else  { 
+    throw new Error('semiRandom function - availableDirectionArr does not have the oppositeDir')
   }
 
   let len = availableDirectionArr.length
@@ -416,9 +426,12 @@ semiRandom(grid) {
   // return arr[randNum]  
   let randNum = Math.floor(Math.random() * len)
 
-  return arr[randNum]
+  let nextPos = arr[randNum].split(',')
 
+  let xPos = nextPos[0]
+  let yPos = nextPos[1]
 
+  return {xPos, yPos}
 }
 
   
