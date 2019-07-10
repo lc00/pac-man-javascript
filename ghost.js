@@ -87,6 +87,7 @@ class Ghost extends Character {
         let dirArr = ['right', 'down', 'left', 'up']
 
         let arr = this.bfs(grid, pacmanPos, ghostPos)
+        console.log('maybeMove - arr', arr)
         if(arr == 'undefined') {
           throw new Error('arr from the bfs result is undefined')
         }

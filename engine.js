@@ -197,10 +197,7 @@ class Engine {
       // }
 
 
-      if(pelletCount === 0 ) {
-        this.isGameOn = false
-        console.log('you win')
-      }
+      
 
     }
 
@@ -431,6 +428,11 @@ class Engine {
         
 
 
+      }
+
+      if(pelletCount === 0 ) {
+        this.isGameOn = false
+        console.log('you win')
       }
 
       // adding a 10 pixel buffer
@@ -727,9 +729,9 @@ class Engine {
             if( index >= 0) {
               availableDirections.splice(index, 1)
             } 
-            else {
-              throw new Error('flash - isCenter - availableDirection do not have the current direction')
-            }
+            // else {
+            //   throw new Error('flash - isCenter - availableDirection do not have the current direction')
+            // }
 
             console.log('availableDirections', availableDirections)
 
