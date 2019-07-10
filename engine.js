@@ -666,26 +666,51 @@ class Engine {
 
         nextPos = nextPos.xPos + ',' + nextPos.yPos
 
+               
+        // update direction
+        this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
+        if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
+
+
       }
       // when it's not at center and in flash mode
       // whwen it's at center and in flash mode
       else if (this.mode === 'flash'){  
-        // update ghost position
-        nextPos = this.redGhost.random(this.grid.cells)
 
-        // store nextPos
-        // nextPos = nextPos.split(',')
-        this.redGhost.nextXPos = nextPos.xPos
-        this.redGhost.nextYPos = nextPos.yPos
+        // the direction has been updated inside collisionDetection
+        // so just continue this direction until ghost reaches a three or four way junction
+        // then chooses one of the other directions, but not hte one it came from
 
-        nextPos = nextPos.xPos + ',' + nextPos.yPos
+        let isCenter = this.redGhost.isAtCenter()
 
+        if(isCenter) {
+          // check for 3 or 4 way junction
+          let isJunction = this.redGhost.checkJunction(this.grid.cells)
+          // if yes, random, but not the one it came from
+          if(isJunction)  {
+            nextPos = this.redGhost.semiRandom(this.grid.cells)
+          }
+
+          // store nextPos
+          // nextPos = nextPos.split(',')
+          this.redGhost.nextXPos = nextPos.xPos
+          this.redGhost.nextYPos = nextPos.yPos
+
+          nextPos = nextPos.xPos + ',' + nextPos.yPos
+
+          // update direction
+          this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
+          if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
+
+        }
+
+        // note that if not at center, continue in the current direction with the this.redGhost.nextXpos  
+        // and this.redGhost.nextXpos
+        else {
+          // check 
+        }
       }
 
-       
- // update direction
-        this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
-        if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
 
       let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
       this.redGhost.xPos = ghostPos.xPos

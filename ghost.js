@@ -361,6 +361,66 @@ determinePos(direction, x, y, deltaX, deltaY) {
   return {x, y}
 }
 
+checkJunction(grid) {
+  let key = this.xPos + ',' + this.yPos
+  let arr = this.getAccessibleNeighbors(grid, key)
+  let len = arr.length
+
+  let nextPos
+
+  if(len > 2) return true
+  else        return false
+}
+
+getOppositeDirection(direction) {
+  switch (direction) {
+    case 'left':
+      return 'right'  
+    case 'right':
+      return 'left'
+    case 'up':
+      return 'down'
+    case 'down':
+      return 'up'
+  }
+}
+
+semiRandom(grid) {
+  let currentPos = this.xPos + ',' + this.yPos
+  let arr = this.getAccessibleNeighbors(grid, currentPos)
+  let availableDirectionArr = []
+
+  let direction
+
+  // get available directions
+  arr.forEach(cell => {
+    direction = this.determineDirection(currentPos, cell)
+    availableDirectionArr.push(direction)
+  })
+
+  // get the opposite direction of the current direction
+  // delete it
+
+  console.log('-------------- this direction: ', this.direction, '--------------')
+  console.log('-----------------------------------------------------------------')
+  let oppositeDir = this.getOppositeDirection(this.direction)
+
+  let index = availableDirectionArr.indexOf(oppositeDir)
+
+  if(index >= 0)  availableDirectionArr.splice(index, 1)
+  else           { throw new Error('semiRandom function - something went wrong with availableDirectionArr')
+  }
+
+  let len = availableDirectionArr.length
+  // get randNum
+  // return arr[randNum]  
+  let randNum = Math.floor(Math.random() * len)
+
+  return arr[randNum]
+
+
+}
+
   
 random(grid) {
   let isAtCenter = this.isAtCenter()
