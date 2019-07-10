@@ -387,7 +387,7 @@ getOppositeDirection(direction) {
 
 semiRandom(grid) {
   let currentPos = this.xPos + ',' + this.yPos
-  let arr = this.getAccessibleNeighbors(grid, currentPos)
+  // let arr = this.getAccessibleNeighbors(grid, currentPos)
   let availableDirectionArr = []
 
   let direction

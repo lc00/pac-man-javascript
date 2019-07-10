@@ -90,6 +90,7 @@ class Engine {
       this.redGhost = null
       this.mode = 'normal'
       this.isGameOn = true
+      this.isFirstIterationInFlashMode = false
     }
 
     // setup
@@ -209,24 +210,10 @@ class Engine {
 
        this.mode = 'flash'
 
-       console.log('!!! big-pellet eaten -----------')
-       
-       switch (this.redGhost.direction) {
-         case 'left':
-           this.redGhost.direction = 'right'
-           break
-         case 'right':
-           this.redGhost.direction = 'left'
-           break
-         case 'up':
-             this.redGhost.direction = 'down'
-             break 
-         case 'down':
-             this.redGhost.direction = 'up'
-             break 
+       this.isFirstIterationInFlashMode = true 
 
-       }
-       console.log('change direction -----------')
+       console.log('!!! big-pellet eaten! Green ghost. In flash mode!-----------')
+       
 
     }
 
@@ -234,6 +221,8 @@ class Engine {
       this.redGhost.color = 'red'
 
       this.mode = 'normal'
+
+      this.isFirstIterationInFlashMode = false
     }
 
     bigPelletEaten() {
@@ -677,72 +666,114 @@ class Engine {
       // whwen it's at center and in flash mode
       else if (this.mode === 'flash'){  
 
-        // the direction has been updated inside collisionDetection
-        // so just continue this direction until ghost reaches a three or four way junction
-        // then chooses one of the other directions, but not hte one it came from
+        if(this.isFirstIterationInFlashMode === true ) {
+          // for the fist iteration of flah
+          // switch to opposite direction
+          switch (this.redGhost.direction) {
+            case 'left':
+              this.redGhost.direction = 'right'
+              break
+            case 'right':
+              this.redGhost.direction = 'left'
+              break
+            case 'up':
+                this.redGhost.direction = 'down'
+                break 
+            case 'down':
+                this.redGhost.direction = 'up'
+                break 
+          }
 
+          // move
+          this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
+
+          // reset 
+          this.isFirstIterationInFlashMode = false
+        }
+
+       
+
+        // check isAtCenter
         let isCenter = this.redGhost.isAtCenter()
 
-        if(isCenter) {
-          console.log('flash - isCenter = true')
-          // check for 3 or 4 way junction
-          let isJunction = this.redGhost.checkJunction(this.grid.cells)
-          // if yes, random, but not the one it came from
-          if(isJunction)  {
-            console.log('flash - isJunction = true')
-            nextPos = this.redGhost.semiRandom(this.grid.cells)
-            console.log('flash - isJunction nextPos:', nextPos)
-             
-          }
-          // else keep the current directin
-          else {
-            console.log('flash - isJunction = false')
-            nextPos = this.redGhost.random(this.grid.cells)
-            console.log('flash - isJunction nextPos:', nextPos)
-             
-          }
-         
-          // store nextPos
-            // nextPos = nextPos.split(',')
-            this.redGhost.nextXPos = nextPos.xPos
-            this.redGhost.nextYPos = nextPos.yPos
+        //  if yes
+        //    // get all accessible neighbors
+        //          if more than one neighbor
+        //            get directions
+        //            delete opposite of current direction one, then random direction
+        if(isCenter) {  
+          let currentPos = this.redGhost.xPos + ',' + this.redGhost.yPos
 
-            nextPos = nextPos.xPos + ',' + nextPos.yPos
+          let availableNeighbors = this.redGhost.getAccessibleNeighbors_bfs(gridObj, currentPos)
 
-            // update direction
-            this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
-            if(!this.redGhost.direction) {
-              throw new Error('flash - redGhost direction undefined')
+          let availableDirections = []
+
+          console.log('isC3nter - availableNeighbors', availableNeighbors)
+          if(availableNeighbors.length > 1) {
+            console.log('isCenter - more than 1 neighbor')
+
+            availableNeighbors.forEach(neighbor => {
+              direction = this.redGhost.determineDirection(currentPos, neighbor)
+              availableDirections.push(direction)
+            })
+
+            console.log('availableDirections', availableDirections)
+            console.log('this.redGhost.direction', this.redGhost.direction)
+            let oppositeDirection = this.redGhost.getOppositeDirection(this.redGhost.direction)
+
+            console.log('oppositeDirection', oppositeDirection)
+
+            let index = availableDirections.indexOf(oppositeDirection)
+            if( index >= 0) {
+              availableDirections.splice(index, 1)
+            } 
+            else {
+              throw new Error('flash - isCenter - availableDirection do not have the current direction')
             }
 
-            console.log('flash nextPos',  this.redGhost.nextXPos, this.redGhost.nextYPos)
+            console.log('availableDirections', availableDirections)
 
+            let len = availableDirections.length
+            // get randNum
+            // return arr[randNum]  
+            let randNum = Math.floor(Math.random() * len)
+          
+            this.redGhost.direction = availableDirections[randNum]
+
+
+            console.log('ghost direction', this.redGhost.direction)
+          }
+           
+          else {
+            console.log('isCenter - 1 neighbor')
+            this.redGhost.direction = this.redGhost.getOppositeDirection(this.redGhost.direction)
+            console.log('ghost direction', this.redGhost.direction)
+
+          }
+ 
 
         }
 
-        // note that if not at center, continue in the current direction with the this.redGhost.nextXpos  
-        // and this.redGhost.nextXpos
-        else {
-          // nextPos = this.redGhost.xPos + ',' + this.redGhost.yPos
-
-          // update direction
-          // this.redGhost.direction = this.redGhost.determineDirection(currentPos, this.redGhost.nextXPos + ',' + this.redGhost.nextYPos)
-          // if(!this.redGhost.direction) console.log('maybeMove function direction undefined')
-        }
       }
+       
 
-      let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
-      this.redGhost.xPos = ghostPos.xPos
-      this.redGhost.yPos = ghostPos.yPos
+
+        // move
+        let ghostPos = this.redGhost.move(this.redGhost.direction, this.redGhost.xPos, this.redGhost.yPos)
+        this.redGhost.xPos = ghostPos.xPos
+        this.redGhost.yPos = ghostPos.yPos
+
     
  
       console.log(`ghost direction ${this.redGhost.direction}`)
       console.log(`ghost xPos: ${this.redGhost.xPos}, ghost yPos: ${this.redGhost.yPos}`)
 
+
       this.collisionDetection()
     
-      this.draw()      
-      }
+      this.draw()  
+        
+    }
 
     listen(){
       document.addEventListener('keydown', (e) => { 
