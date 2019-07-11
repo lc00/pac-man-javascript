@@ -98,10 +98,10 @@ function bfs(grid, pacmanPos, ghostPos) {
           let item
           arr.length <= 1 ? item = arr[0] : item = arr[arr.length-1]
 
-console.log(' pac-man pathArr', pathArr)
-console.log('pac-man arr', arr)
-console.log('pac-man arr[arr.length-1]', arr[arr.length-1])
-console.log('pac-man item!!', item)
+          console.log(' pac-man pathArr', pathArr)
+          console.log('pac-man arr', arr)
+          console.log('pac-man arr[arr.length-1]', arr[arr.length-1])
+          console.log('pac-man item!!', item)
 
         // if yes, add into this array
           if(isNeighbor(item, key))  {

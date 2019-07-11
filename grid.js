@@ -31,21 +31,6 @@ class Grid {
 
         if(this.startGrid.hasOwnProperty(str)) {
           content = this.startGrid[str]
-
-          // if(content === 'pac-man') {
-          //   this.player = new Player(playerInfo.speed, x, y, playerInfo.direction)    
-
-
-          // // clear previous position in gridObj
-          // // let prevX = this.player.xPos
-          // // let prevY = this.player.yPos
-          // // let str = '' + prevX + prevY
-          // // cells[cell].content = 'empty'
-
-          // // update state
-          // // this.player.xPos = x  
-          // // this.player.yPos = y
-          // }
         } else {
           content = 'empty'
         }

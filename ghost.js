@@ -35,27 +35,7 @@ class Ghost extends Character {
     }
   
     isAtCenter() {
-
       return this.xPos % 50 === 0 && this.yPos % 50 === 0 ? true : false 
-
-  
-      // switch (this.direction) {
-      //     case 'left':
-      //     case 'right':
-      //         result = this.xPos % 50 === 0 ? true : false
-      //         // console.log('isAtCenter, L or R', result)
-      //         return result
-      //       break
-      //     case 'up':
-      //     case 'down':
-      //         result = this.yPos % 50 === 0 ? true : false
-      //         // console.log('isAtCenter, U or D', result)
-      //         return result
-      //       break
-      //     default:
-      //       return null
-      //       break
-      // }
     }
 
     // todo 
@@ -74,7 +54,6 @@ class Ghost extends Character {
     }
 
     maybeMove(grid, pacmanPos, ghostPos) {
-      // let isAtCenter = this.isAtCenter()
       let deltaX = grid.width / grid.numXCell
       let deltaY = grid.height / grid.numYCell
 
@@ -126,8 +105,6 @@ class Ghost extends Character {
         default:
           return false
       }
-    
-    
     }
 
     getAccessibleNeighbors_bfs(grid, key) {
@@ -215,11 +192,11 @@ class Ghost extends Character {
               let item
               arr.length <= 1 ? item = arr[0] : item = arr[arr.length-1]
     
-    console.log(' pac-man pathArr', pathArr)
-    console.log('pac-man arr', arr)
-    console.log('pac-man arr[arr.length-1]', arr[arr.length-1])
-    console.log('pac-man item!!', item)
-    
+              console.log(' pac-man pathArr', pathArr)
+              console.log('pac-man arr', arr)
+              console.log('pac-man arr[arr.length-1]', arr[arr.length-1])
+              console.log('pac-man item!!', item)
+              
             // if yes, add into this array
               if(this.isNeighbor(item, key))  {
                 arr.push(key)
@@ -269,11 +246,11 @@ class Ghost extends Character {
                 let arr = pathArr[i]
                 let item
                 arr.length <= 1 ? item = arr[0] : item = arr[arr.length-1]
-    
-      console.log('pathArr', pathArr)
-      console.log('arr', arr)
-      console.log('arr[arr.length-1]', arr[arr.length-1])
-      console.log('item!!', item)
+              
+                console.log('pathArr', pathArr)
+                console.log('arr', arr)
+                console.log('arr[arr.length-1]', arr[arr.length-1])
+                console.log('item!!', item)
               // if yes, add into this array
                 if(key == '0,200') {
                   console.log('blah')
@@ -310,27 +287,6 @@ class Ghost extends Character {
             accessibleNeighborArr.forEach(item => {
               queue.push(item)
             })
-    
-            // let coordArr = key.split(',')
-            // let [ x , y ] = coordArr
-            // let left = Number(x) - 50 + ',' + Number(y)
-            // let right = Number(x) + 50 + ',' + Number(y)
-            // let top = Number(x) + ',' + (Number(y) - 50)
-            // let bottom = Number(x) + ',' + (Number(y) + 50)
-    
-            // let neighborArr = []
-            // neighborArr.push(left)
-            // neighborArr.push(top)
-            // neighborArr.push(right)
-            // neighborArr.push(bottom)  
-    
-            // neighborArr.forEach(key => {
-            //   if (key in grid && grid[key] !== 'wall') {
-            //     queue.push(key)
-      
-            //   }
-            // })
-            
           
             console.log('queue...', queue)    
             console.log('!!! pathArr !!!', pathArr)
@@ -478,67 +434,6 @@ random(grid) {
   let yPos = nextCell.y
   
 
-  // if at center, determine if current direction is viable
-  // if yes, continue 
-  // else do a random direction
-  // if (isAtCenter) {   
-  //   let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
-  //   tempX = newPos.x
-  //   tempY = newPos.y
-
-  //   let nextCell = grid.getCell(tempX, tempY)
-  //   let pos
-
-  //   if(nextCell && nextCell.content === 'wall' || nextCell === false){
-      
-  //     let randNum = Math.floor(Math.random() * 4)
-  //     this.direction = dirArr[randNum]
-
-  //     let newPos = this.determinePos(this.direction, this.xPos, this.yPos, deltaX, deltaY)
-  //       tempX = newPos.x
-  //       tempY = newPos.y
-  //   }
-      
-  // }
-  
-  // // not center
-  // else {
-  //   switch (this.direction ) {
-  //       case 'left':
-  //           tempX = (Math.floor(this.xPos / deltaX) ) * deltaX
-  //           tempY = this.yPos
-  //           break
-  //       case 'right':
-  //           tempX = (Math.floor(this.xPos / deltaX) + 1) * deltaX
-  //           tempY = this.yPos
-  //           break
-  //       case 'up':
-  //           tempY = (Math.floor(this.yPos / deltaY) ) * deltaY
-  //           tempX = this.xPos
-  //           break
-  //       case 'down':
-  //           tempY = (Math.floor(this.yPos / deltaY) + 1) * deltaY
-  //           tempX = this.xPos
-  //           break
-  //     }
-  //   }
-
-  // let nextCell = grid.getCell(tempX, tempY)
-  // let pos
-
-  // if(nextCell && nextCell.content !== 'wall'){
-
-  //   pos = this.move(this.direction)
-  //   this.xPos = pos.xPos
-  //   this.yPos = pos.yPos
-  // }
-  // else {
-  //   pos = {
-  //     xPos: this.xPos,
-  //     yPos: this.yPos
-  //   }
-  // }
-  
   console.log(`ghost direction ${this.direction}`)
   console.log(`ghost xPos: ${this.xPos}, ghost yPos: ${this.yPos}`)
 
