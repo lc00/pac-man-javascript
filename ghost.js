@@ -194,8 +194,9 @@ class Ghost extends Character {
         console.log('')
         console.log('key...', key)
 
-        if(key == '0,200') {
-          console.log('blah')
+        if(key == '400,400') {
+          console.log('400,400')
+          debugger
         }
     
           // is it visited

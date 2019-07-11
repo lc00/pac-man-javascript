@@ -13,7 +13,7 @@ const playerInfo = {
   speed: 2,
   color: 'yellow',
   xPos: 100,
-  yPos: 200,
+  yPos: 150,
   radius: 25,
   direction: 'right'
 }
@@ -97,19 +97,35 @@ class Engine {
     setUp() {
       // create grid instances
       //              Grid(startX,startY,width,height,numXCell,numYCell, gridObj)
-      this.grid= new Grid(0,0,300,300,6,6, gridObj)
-      this.grid.setUp()
 
+      // count number of x-axis cells
+      // count number of y-axis cells
+      let numXCell
+      let numYCell
+
+      for (let key in gridObj) {
+        let tempArr = key.split(',')
+        numXCell = tempArr[0]
+        numYCell = tempArr[1]
+      }
+
+      numXCell /= cellSpacing
+      numYCell /= cellSpacing
+
+      this.grid= new Grid(0,0,numXCell*cellSpacing,numYCell*cellSpacing,numXCell,numYCell, gridObj)
+      debugger
+      this.grid.setUp()
+      
       this.player = new Player(playerInfo.speed, playerInfo.color, true, playerInfo.xPos, playerInfo.yPos, playerInfo.direction)    
 
       this.redGhost = new Ghost(ghostsInfo.redGhost.speed, ghostsInfo.redGhost.color, true, ghostsInfo.redGhost.xPos, ghostsInfo.redGhost.yPos, ghostsInfo.redGhost.direction)
-    
     }  
 
     // draw
     draw() { 
       // draw the cells and their content
       let cells = this.grid.cells
+      debugger
       for (let cell in cells) {
         if (cells[cell].content === 'wall'){
           let [x, y] = cell.split(',')
@@ -768,7 +784,7 @@ class Engine {
       console.log(`ghost direction ${this.redGhost.direction}`)
       console.log(`ghost xPos: ${this.redGhost.xPos}, ghost yPos: ${this.redGhost.yPos}`)
 
-
+      debugger
       this.collisionDetection()
     
       this.draw()  
@@ -843,50 +859,57 @@ function animation() {
 
 
 const cellSpacing = 50
-let grid = {
-  '0,0': 'sm-pellet',
-  '1,0': 'big-pellet',
-  '2,0': 'sm-pellet',
-  '3,0': 'sm-pellet',
-  '4,0': 'sm-pellet',
-  '5,0': 'sm-pellet',
 
-  '0,1': 'sm-pellet',
-  '1,1': 'wall',
-  '2,1': 'sm-pellet',
-  '3,1': 'sm-pellet',
-  '4,1': 'sm-pellet',
-  '5,1': 'sm-pellet',
+let grid = {"0,0":"big-pellet","1,0":"sm-pellet","2,0":"sm-pellet","3,0":"sm-pellet","4,0":"big-pellet","5,0":"sm-pellet","6,0":"sm-pellet","7,0":"sm-pellet","0,1":"sm-pellet","1,1":"wall","2,1":"wall","3,1":"wall","4,1":"wall","5,1":"wall","6,1":"wall","7,1":"sm-pellet","0,2":"sm-pellet","1,2":"wall","2,2":"wall","3,2":"wall","4,2":"wall","5,2":"wall","6,2":"wall","7,2":"sm-pellet","0,3":"sm-pellet","1,3":"sm-pellet","2,3":"sm-pellet","3,3":"sm-pellet","4,3":"sm-pellet","5,3":"sm-pellet","6,3":"sm-pellet","7,3":"sm-pellet","0,4":"big-pellet","1,4":"wall","2,4":"wall","3,4":"wall","4,4":"wall","5,4":"wall","6,4":"wall","7,4":"sm-pellet","0,5":"sm-pellet","1,5":"wall","2,5":"wall","3,5":"wall","4,5":"wall","5,5":"wall","6,5":"wall","7,5":"sm-pellet","0,6":"sm-pellet","1,6":"sm-pellet","2,6":"sm-pellet","3,6":"sm-pellet","4,6":"sm-pellet","5,6":"sm-pellet","6,6":"sm-pellet","7,6":"sm-pellet","0,7":"sm-pellet","1,7":"wall","2,7":"wall","3,7":"wall","4,7":"wall","5,7":"wall","6,7":"wall","7,7":"sm-pellet"}
 
-  '0,2': 'sm-pellet',
-  '1,2': 'wall',
-  '2,2': 'wall',
-  '3,2': 'sm-pellet',
-  '4,2': 'sm-pellet',
-  '5,2': 'sm-pellet',
+console.log('grid', grid)
 
-  '0,3': 'sm-pellet',
-  '1,3': 'sm-pellet',
-  '2,3': 'sm-pellet',
-  '3,3': 'sm-pellet',
-  '4,3': 'sm-pellet',
-  '5,3': 'sm-pellet',
 
-  '0,4': 'big-pellet',
-  '1,4': 'wall',
-  '2,4': 'sm-pellet',
-  '3,4': 'sm-pellet',
-  '4,4': 'wall',
-  '5,4': 'sm-pellet',
 
-  '0,5': 'big-pellet',
-  '1,5': 'sm-pellet',
-  '2,5': 'sm-pellet',
-  '3,5': 'sm-pellet',
-  '4,5': 'wall',
-  '5,5': 'sm-pellet'
+// let grid = {
+//   '0,0': 'sm-pellet',
+//   '1,0': 'big-pellet',
+//   '2,0': 'sm-pellet',
+//   '3,0': 'sm-pellet',
+//   '4,0': 'sm-pellet',
+//   '5,0': 'sm-pellet',
 
-}
+//   '0,1': 'sm-pellet',
+//   '1,1': 'wall',
+//   '2,1': 'sm-pellet',
+//   '3,1': 'sm-pellet',
+//   '4,1': 'sm-pellet',
+//   '5,1': 'sm-pellet',
+
+//   '0,2': 'sm-pellet',
+//   '1,2': 'wall',
+//   '2,2': 'wall',
+//   '3,2': 'sm-pellet',
+//   '4,2': 'sm-pellet',
+//   '5,2': 'sm-pellet',
+
+//   '0,3': 'sm-pellet',
+//   '1,3': 'sm-pellet',
+//   '2,3': 'sm-pellet',
+//   '3,3': 'sm-pellet',
+//   '4,3': 'sm-pellet',
+//   '5,3': 'sm-pellet',
+
+//   '0,4': 'big-pellet',
+//   '1,4': 'wall',
+//   '2,4': 'sm-pellet',
+//   '3,4': 'sm-pellet',
+//   '4,4': 'wall',
+//   '5,4': 'sm-pellet',
+
+//   '0,5': 'big-pellet',
+//   '1,5': 'sm-pellet',
+//   '2,5': 'sm-pellet',
+//   '3,5': 'sm-pellet',
+//   '4,5': 'wall',
+//   '5,5': 'sm-pellet'
+
+// }
 
 let gridObj = {}
 
@@ -900,6 +923,7 @@ function scaleGrid(grid) {
     gridObj[x + ',' + y] = value
 
   }
+
   return gridObj
 }
 
@@ -910,7 +934,6 @@ scaleGrid(grid)
 
 
 
-// let pelletCount = 6*6-6
  let pelletCount = 30
 
 

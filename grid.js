@@ -25,8 +25,8 @@ class Grid {
     let deltaY = this.height / this.numYCell - 1
     // console.log('deltaX', deltaX)
     // console.log('deltaY', deltaY)
-    for(let y=0; y<this.height; y++){
-      for(let x=0; x<this.width; x++) {
+    for(let y=0; y<=this.height; y++){
+      for(let x=0; x<=this.width; x++) {
         str = '' + x + ',' + y
 
         if(this.startGrid.hasOwnProperty(str)) {

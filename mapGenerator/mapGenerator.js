@@ -18,6 +18,9 @@ const canvasOffsetY = 10
 let width
 let height
 
+let horizontileCellCount
+let verticalCellCount
+
 generateButton.addEventListener('click', generateGrid);
 startMapButton.addEventListener('click', startMap)
 modifyMapButton.addEventListener('click', modifyMap)
@@ -28,8 +31,8 @@ canvas.addEventListener('mousemove', mouseMove)
 
 function generateGrid() {
     // grab the width and height in cell count
-    const horizontileCellCount = document.querySelector('#horizontalNum').value
-    const verticalCellCount = document.querySelector('#verticalNum').value
+    horizontileCellCount = document.querySelector('#horizontalNum').value
+    verticalCellCount = document.querySelector('#verticalNum').value
     width = canvasWidth / horizontileCellCount
     height = canvasWidth / verticalCellCount
     let startPtX = canvasOffsetX
@@ -151,12 +154,30 @@ function mouseMove(e) {
 }
 
 function doneMap() {
-  // for (let key in gridObj) {
-  //   console.log(String(key) + ':' + gridObj[key])
+  for (let key in gridObj) {
+    let keyArr = key.split(',')
+    let x = keyArr[0]
+    let y = keyArr[1]
 
-  // }
+    // let totalCells = horizontileCellCount * verticalCellCount
 
-  console.log('gridObj', gridObj)
+    // console.log(key, gridObj[key], typeof gridObj[key])
+    if(gridObj[key] === ''){
+      x % Math.floor(horizontileCellCount / 2) === 0 && y % Math.floor(horizontileCellCount / 2) === 0
+        ? gridObj[key] = 'big-pellet' 
+        : gridObj[key] = 'sm-pellet'
+
+      console.log(key, gridObj[key], typeof gridObj[key])
+      
+    }
+
+
+
+
+
+  }
+
+  console.log('gridObj', JSON.stringify(gridObj))
 }
 
 
