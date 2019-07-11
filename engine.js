@@ -197,7 +197,10 @@ class Engine {
       // }
 
 
-      
+      if(pelletCount === 0 ) {
+        this.isGameOn = false
+        console.log('you win')
+      }
 
     }
 
@@ -428,11 +431,6 @@ class Engine {
         
 
 
-      }
-
-      if(pelletCount === 0 ) {
-        this.isGameOn = false
-        console.log('you win')
       }
 
       // adding a 10 pixel buffer

@@ -34,6 +34,9 @@ function generateGrid() {
     height = canvasWidth / verticalCellCount
     let startPtX = canvasOffsetX
     let startPtY = canvasOffsetY
+    
+    console.log('width', width)
+    console.log('height', height)
 
   for (let j=0; j< verticalCellCount; j++){
     for(let i=0; i<horizontileCellCount; i++) {
@@ -105,20 +108,21 @@ function mouseMove(e) {
     // console.log('e', e)
     console.log('x', e.x, 'y', e.y)
 
-    let x = e.x - canvasOffsetX
+    let x = e.x - 10
     // e is based on the window, not the canvas, therefore the e.y needs 155 offset
-    let y = e.y - 155   
+    let y = e.y - 145   
 
-    let xNormalized = x / width
-    let yNormalized = y / height
+    let cellX = Math.floor(x / width)
+    let cellY = Math.floor(y / height)
 
     // determine which cell it is in
-    let cellX = Math.floor(xNormalized % width)
-    let cellY = Math.floor(yNormalized % height)
+    // let cellX = Math.floor(xNormalized % width)
+    // let cellY = Math.floor(yNormalized % height)
 
     if(isStartMapBtnPressed === true) {
       gridObj[cellX + ',' + cellY] = 'wall'
       console.log( '--- isStartMapBtnPressed  ---', 'cellX', cellX, 'cellY', cellY)
+
   
       // draw
       canvasHelper.rectangle({
